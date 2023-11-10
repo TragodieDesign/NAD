@@ -1,0 +1,40 @@
+{
+  "networks": [
+    {
+      "ssid": "WiFi-Network-1",
+      "bssid": "00:11:22:33:44:55",
+      "mac": "00:11:22:33:44:55",
+      "channel": 6,
+      "frequency": 2437,
+      "signal_level": -75,
+      "quality": 80,
+      "security": "WPA2",
+      "security_flags": "AES",
+      "mode": "Infra"
+    },
+    {
+      "ssid": "Home-WiFi",
+      "bssid": "66:77:88:99:AA:BB",
+      "mac": "66:77:88:99:AA:BB",
+      "channel": 11,
+      "frequency": 2462,
+      "signal_level": -80,
+      "quality": 75,
+      "security": "WPA WPA2",
+      "security_flags": "TKIP AES",
+      "mode": "Infra"
+    },
+    {
+      "ssid": "Open-Network",
+      "bssid": "CC:DD:EE:FF:00:11",
+      "mac": "CC:DD:EE:FF:00:11",
+      "channel": 1,
+      "frequency": 2412,
+      "signal_level": -65,
+      "quality": 90,
+      "security": "Open",
+      "security_flags": "None",
+      "mode": "Infra"
+    }
+  ]
+}
