@@ -4,11 +4,14 @@ const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 3003;
+
 app.use(cors({
   origin: '*', // Substitua pela origem do seu aplicativo React
 }));
+
 // Middleware para analisar cookies
 app.use(cookieParser());
+
 // Middleware para analisar o corpo da requisição JSON
 app.use(express.json());
 

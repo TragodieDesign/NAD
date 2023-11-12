@@ -2,55 +2,136 @@ const express = require('express');
 const { exec } = require('child_process');
 const fs = require('fs').promises;
 const path = require('path');
-const router = express.Router();
 const cookieParser = require('cookie-parser');
 
-const jsonDirPath = path.join(__dirname, '.', 'connect');
+const router = express.Router();
+router.use(cookieParser());
+
+const jsonDirPath = path.join(__dirname, 'connect');
 const jsonFilePath = path.join(jsonDirPath, 'connect.json');
 
-const authenticateUser = async (username, password) => {
-  return new Promise((resolve, reject) => {
-    const authCommand = `echo '${password}' | sudo -S ./authenticate.sh ${username}`;
+router.post('/', async (req, res) => {
+  const { username, password, action } = req.body;
 
-    exec(authCommand, async (error, stdout, stderr) => {
-      if (!error) {
-        if (!stdout.includes('Falha na autenticação')) {
-          const connectData = {
-            username,
-            password,
-            authenticated: true,
-            timestamp: new Date().toISOString(),
-          };
+  if (action === 'logoff') {
+    // Lógica de logoff
+    // ...
 
-          try {
-            await fs.mkdir(jsonDirPath, { recursive: true });
-            await fs.writeFile(jsonFilePath, JSON.stringify(connectData, null, 2));
+    // Remover o cookie de autenticação
+    res.clearCookie('autenticado');
+    const logoffSuccess = {
+      message: 'Usuário deslogado com sucesso',
+      success: 'logoff',
+    };
+    res.status(200).json(logoffSuccess);
+    console.log('Usuário deslogado com sucesso')
+  } else {
+    try {
+      // Tentar ler as credenciais do arquivo connect.json
+      const jsonData = await fs.readFile(jsonFilePath, 'utf-8');
+      const connectData = JSON.parse(jsonData);
 
-            resolve({
-              message: 'autenticado',
+      // Verificar se as credenciais correspondem
+      if (connectData.username === username && connectData.password === password) {
+        // Autenticação com o script authenticate.sh
+        const authCommand = `echo '${password}' | sudo -S ./authenticate.sh ${username}`;
+
+        exec(authCommand, async (error, stdout, stderr) => {
+          if (!error) {
+            // Restante da lógica de autenticação permanece inalterado
+            // ...
+
+            // Configurar o cookie na sessão
+            res.cookie('autenticado', true, { httpOnly: true });
+
+            const authSuccess = {
+              message: 'Usuário autenticado com sucesso',
               success: 'autenticado',
-            });
-          } catch (writeError) {
-            reject({
-              message: 'Erro ao salvar o arquivo JSON.',
-              error: writeError,
-            });
+            };
+            res.status(200).json(authSuccess);
+            console.log(`Usuário: ${username} e senha:${password} autenticado com sucesso`)
+          } else {
+            const errorResponse = {
+              message: 'Erro ao executar o script',
+              error: error.message,
+              stderr: stderr,
+            };
+            res.status(500).json(errorResponse);
+            console.error('Erro ao executar o script:', error);
+            console.error('Saída de erro:', stderr);
           }
-        } else {
-          reject({
-            message: 'Erro de autenticação',
-            incorrect: 'Usuário ou senha incorretos',
+        });
+      } else {
+        // Credenciais incorretas
+        const authError = {
+          message: 'Usuário ou senha incorretos',
+        };
+        res.status(401).json(authError);
+        console.log('Usuário ou senha incorretos')
+      }
+    } catch (readError) {
+      if (readError.code === 'ENOENT') {
+        // Se o arquivo connect.json não existir, criar e salvar as credenciais
+        const connectData = {
+          username,
+          password,
+          timestamp: new Date().toISOString(),
+        };
+
+        try {
+          // Criar o diretório se não existir
+          await fs.mkdir(jsonDirPath, { recursive: true });
+
+          // Salvar as credenciais no arquivo connect.json
+          await fs.writeFile(jsonFilePath, JSON.stringify(connectData, null, 2));
+
+          // Autenticação com o script authenticate.sh
+          const authCommand = `echo '${password}' | sudo -S ./authenticate.sh ${username}`;
+
+          exec(authCommand, async (error, stdout, stderr) => {
+            if (!error) {
+              // Restante da lógica de autenticação permanece inalterado
+              // ...
+
+              // Configurar o cookie na sessão
+              res.cookie('autenticado', true, { httpOnly: true });
+
+              const authSuccess = {
+                message: 'Usuário autenticado com sucesso',
+                success: 'autenticado',
+              };
+              res.status(200).json(authSuccess);
+            } else {
+              const errorResponse = {
+                message: 'Erro ao executar o script',
+                error: error.message,
+                stderr: stderr,
+              };
+              res.status(500).json(errorResponse);
+              console.error('Erro ao executar o script:', error);
+              console.error('Saída de erro:', stderr);
+            }
           });
+        } catch (writeError) {
+          // Lidar com erros ao criar ou salvar o arquivo connect.json
+          console.error('Erro ao criar ou salvar o arquivo connect.json:', writeError);
+          const errorResponse = {
+            message: 'Erro ao criar ou salvar o arquivo connect.json',
+            error: writeError.message,
+          };
+          res.status(500).json(errorResponse);
         }
       } else {
-        reject({
-          message: 'Erro ao executar o script',
-          error: error.message,
-          stderr: stderr,
-        });
+        // Lidar com outros erros de leitura, se necessário
+        console.error('Erro ao ler connect.json:', readError);
+        const errorResponse = {
+          message: 'Erro ao ler connect.json',
+          error: readError.message,
+        };
+        res.status(500).json(errorResponse);
       }
-    });
-  });
-};
+    }
+  }
+});
 
-module.exports = authenticateUser;
+module.exports = router;

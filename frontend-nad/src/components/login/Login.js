@@ -4,8 +4,7 @@ import axios from 'axios';
 const Login = ({ onLoginSuccess, onLoginError }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [loginError, setLoginError] = useState(null); // Adiciona estado para controlar o erro de login
-
+  const [loginError, setLoginError] = useState(null);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -27,16 +26,18 @@ const Login = ({ onLoginSuccess, onLoginError }) => {
       .then((response) => {
         const { success, message } = response.data;
         if (success) {
-          setLoginError(null); // Limpa o erro ao ter sucesso no login
+          setLoginError(null);
           onLoginSuccess();
+          // Recarrega a página após o login bem-sucedido
+          window.location.reload();
         } else {
-          setLoginError('Login ou senha incorretos'); // Define a mensagem de erro
+          setLoginError('Login ou senha incorretos');
           onLoginError(message);
         }
       })
       .catch((error) => {
         const errorMessage = 'Erro ao autenticar';
-        setLoginError(errorMessage); // Define a mensagem de erro
+        setLoginError(errorMessage);
         onLoginError(errorMessage);
         console.error(errorMessage, error);
       });
@@ -69,7 +70,7 @@ const Login = ({ onLoginSuccess, onLoginError }) => {
           />
         </div>
       </form>
-      {loginError && <div className='warning'>{loginError}</div>} {/* Exibe a mensagem de erro, se houver */}
+      {loginError && <div className='error-message'>{loginError}</div>}
       <button onClick={handleLogin} className='btn-grad'>
         Realizar Login
       </button>

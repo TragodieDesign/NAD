@@ -1,6 +1,10 @@
 {
   "username": "otelo",
   "password": "XgLuS!DYB%g3",
-  "authenticated": true,
-  "timestamp": "2023-11-12T04:07:43.667Z"
+  "timestamp": "2023-11-12T15:22:50.137Z",
+  "connectionType": "ssh",
+  "host": "127.0.0.1",
+  "remoteUser": "otelo",
+  "remotePassword": "123",
+  "connected": true
 }
