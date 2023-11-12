@@ -1,82 +1,80 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 
-class Login extends Component {
-  constructor() {
-    super();
-    this.state = {
-      username: '',
-      password: '',
-    };
-    this.messageElement = React.createRef(); // Ref para acessar o elemento do DOM
-  }
+const Login = ({ onLoginSuccess, onLoginError }) => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState(null); // Adiciona estado para controlar o erro de login
 
-  handleInputChange = event => {
+
+  const handleInputChange = (event) => {
     const { name, value } = event.target;
-    this.setState({
-      [name]: value,
-    });
+    if (name === 'username') {
+      setUsername(value);
+    } else if (name === 'password') {
+      setPassword(value);
+    }
   };
 
-  handleLogin = () => {
+  const handleLogin = () => {
     const data = {
-      username: this.state.username,
-      password: this.state.password,
+      username,
+      password,
     };
-
-    const messageElement = this.messageElement.current;
-
-    messageElement.textContent = '';
 
     axios
       .post('http://localhost:3003/auth', data)
-      .then(response => {
-        const message = response.data.success
-          ? 'Autenticação bem-sucedida: ' + response.data.message
-          : 'Erro na autenticação: ' + response.data.message;
-
-        messageElement.textContent = message;
-
-        if (response.data.success) {
-          // Chama a função de sucesso passada como prop
-          this.props.onLoginSuccess();
+      .then((response) => {
+        const { success, message } = response.data;
+        if (success) {
+          setLoginError(null); // Limpa o erro ao ter sucesso no login
+          onLoginSuccess();
+        } else {
+          setLoginError('Login ou senha incorretos'); // Define a mensagem de erro
+          onLoginError(message);
         }
       })
-      .catch(error => {
-        const errorMessage = 'Erro ao enviar a solicitação de login:' + error.message;
-        messageElement.textContent = errorMessage;
-        console.error(errorMessage);
+      .catch((error) => {
+        const errorMessage = 'Erro ao autenticar';
+        setLoginError(errorMessage); // Define a mensagem de erro
+        onLoginError(errorMessage);
+        console.error(errorMessage, error);
       });
   };
 
-  render() {
-    return (
-      <div>
-        <form>
-          <div>
-            <label>Usuário:</label>
-            <input
-              type="text"
-              name="username"
-              value={this.state.username}
-              onChange={this.handleInputChange}
-            />
-          </div>
-          <div>
-            <label>Senha:</label>
-            <input
-              type="password"
-              name="password"
-              value={this.state.password}
-              onChange={this.handleInputChange}
-            />
-          </div>
-        </form>
-        <div ref={this.messageElement}></div>
-        <button onClick={this.handleLogin}>Realizar Login</button>
+  return (
+    <div className='login-box'>
+      <div className='login-title'>
+        <h1>Digite seu login e senha:</h1>
       </div>
-    );
-  }
-}
+      <form className='login-inputs'>
+        <div>
+          <input
+            className='input'
+            type='text'
+            name='username'
+            value={username}
+            onChange={handleInputChange}
+            placeholder='Usuário:'
+          />
+        </div>
+        <div>
+          <input
+            className='input'
+            type='password'
+            name='password'
+            value={password}
+            onChange={handleInputChange}
+            placeholder='Senha:'
+          />
+        </div>
+      </form>
+      {loginError && <div className='warning'>{loginError}</div>} {/* Exibe a mensagem de erro, se houver */}
+      <button onClick={handleLogin} className='btn-grad'>
+        Realizar Login
+      </button>
+    </div>
+  );
+};
 
 export default Login;

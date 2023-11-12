@@ -1,32 +1,48 @@
-import React, { useState, useEffect } from 'react';
+// VerificarConexao.js
+import React, { useState } from 'react';
+import ConexaoCabo from './ConexaoCabo';
+import ConexaoWifi from './ConexaoWifi';
 import axios from 'axios';
 
-const VerificarConexao = () => {
-  const [conectado, setConectado] = useState(false);
+const VerificarConexao = ({ onConexaoEstabelecida }) => {
+  const [exibirConexaoCabo, setExibirConexaoCabo] = useState(false);
+  const [exibirConexaoWifi, setExibirConexaoWifi] = useState(false);
 
-  useEffect(() => {
-    const verificarConexao = async () => {
-      try {
-        const response = await axios.get('http://localhost:3003/network');
-        if (response.data && response.data.success) {
-          setConectado(true);
-          
-        } else {
-          setConectado(false);
-          
-        }
-      } catch (error) {
-        console.error('Erro ao verificar a conexão', error);
-        setConectado(false);
+  const handleConexaoCabo = () => {
+    setExibirConexaoCabo(true);
+  };
+
+  const handleConexaoWifi = () => {
+    setExibirConexaoWifi(true);
+  };
+
+  const handleConexaoFinalizada = async () => {
+    try {
+      const response = await axios.get('http://localhost:3003/network');
+      if (response.status === 200) {
+        onConexaoEstabelecida();
       }
-    };
-
-    verificarConexao();
-  }, []);
+    } catch (error) {
+      console.error('Erro ao verificar conexão:', error);
+    }
+  };
 
   return (
     <div>
-      {conectado ? <p>Conexão estabelecida</p> : <p>Sem conexão novamente</p>}
+      {!exibirConexaoCabo && !exibirConexaoWifi && (
+        <div>
+          <button onClick={handleConexaoCabo}>Conectar com cabo</button>
+          <button onClick={handleConexaoWifi}>Conectar com Wi-Fi</button>
+        </div>
+      )}
+
+      {exibirConexaoCabo && (
+        <ConexaoCabo onConexaoEstabelecida={handleConexaoFinalizada} />
+      )}
+
+      {exibirConexaoWifi && (
+        <ConexaoWifi onConexaoEstabelecida={handleConexaoFinalizada} />
+      )}
     </div>
   );
 };

@@ -1,3 +1,27 @@
+
+
+body{
+  background-image: url('../public/iStock-1362365251-scaled.webp');
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+  font-family: 'Montserrat', sans-serif;
+}
+.grade{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffffd5;
+  backdrop-filter: blur(8px);
+  border-radius: 30px;
+  width: 500px;
+  height: 650px;
+}
+
 .App {
   text-align: center;
 }
@@ -35,4 +59,128 @@
   to {
     transform: rotate(360deg);
   }
+}
+label{
+  font-weight: 500;
+}
+         
+.btn-grad {
+  background-image: linear-gradient(to right, #FF512F 0%, #F09819  51%, #FF512F  100%);
+  margin: 10px;
+  padding: 15px 45px;
+  text-align: center;
+  text-transform: uppercase;
+  transition: 0.5s;
+  background-size: 200% auto;
+  color: white;            
+  box-shadow: 0 0 20px #eee;
+  border-radius: 10px;
+  display: block;
+  cursor: pointer;
+}
+
+.btn-grad:hover {
+  background-position: right center; /* change the direction of the change here */
+  color: #fff;
+  text-decoration: none;
+}
+
+
+.connection-title{
+  font-weight: 800;
+  text-align: center;
+}
+
+
+.radio-icons-wrapper{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  
+
+}
+
+.conection-option{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 10px;
+}
+.connect-icon{
+  font-size: 30px;
+}
+
+.button-wrapper{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.inputs-wrapper{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
+  gap:30px;
+  
+  
+}
+.input {
+  border: none;
+  outline: none;
+  border-radius: 15px;
+  padding: 1em;
+  background-color: #ccc;
+  box-shadow: inset 2px 5px 10px rgba(0,0,0,0.3);
+  transition: 300ms ease-in-out;
+}
+
+.input:focus {
+  background-color: white;
+  transform: scale(1.05);
+  box-shadow: 13px 13px 100px #969696,
+             -13px -13px 100px #ffffff;
+}
+
+
+
+.login-box{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
+  gap: 10px;
+}
+.login-inputs{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.login-title{
+  font-weight: 800;
+  text-align: center;
+  width: 70%;
+}
+
+.title{
+  font-weight: 800;
+  text-align: center;
+  width: 70%;
+}
+
+.exibir {
+  display: block;
+}
+
+.ocultar {
+  display: none;
 }

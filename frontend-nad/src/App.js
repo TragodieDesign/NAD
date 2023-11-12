@@ -1,51 +1,81 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import './App.css'; 
+import React, { useState,useEffect } from 'react';
+import TelaInicial from './components/inicial/TelaInicial';
+import VerificarConexao from './components/conexao/VerificarConexao';
 import Login from './components/login/Login';
-import RemoteAcess from './components/remote/RemoteAcess'; // Importe o componente RemoteAcess aqui
+import RemoteForm from './components/remote/RemoteForm';
+import axios from 'axios';
 
-const VerificarConexao = () => {
-  const [conectado, setConectado] = useState(false);
-  const [exibirLogin, setExibirLogin] = useState(false);
-  const [exibirMensagem, setExibirMensagem] = useState(true);
 
-  useEffect(() => {
-    const verificarConexao = async () => {
-      try {
-        const response = await axios.get('http://localhost:3003/network');
-        if (response.data && response.data.success) {
-          setConectado(true);
-          setTimeout(() => {
-            setExibirLogin(true);
-            setExibirMensagem(false);
-          }, 3000);
-        } else {
-          setConectado(false);
-        }
-      } catch (error) {
-        console.error('Erro ao verificar a conexão', error);
-        setConectado(false);
-      }
-    };
+const App = () => {
+  const [mostrarTelaInicial, setMostrarTelaInicial] = useState(true);
+  const [mostrarLogin, setMostrarLogin] = useState(false);
+  const [mostrarRemoteForm, setMostrarRemoteForm] = useState(false);
+  const [exibirVerificarConexao, setExibirVerificarConexao]=useState(false);
+  const [exibirMensagem, setExibirMensagem] = useState(false);
+  const [mensagem, setMensagem] = useState('');
 
-    verificarConexao();
-  }, []);
-
-  const handleLoginSuccess = () => {
-    setExibirLogin(false); // Ocultar o componente de login
-    // Outras ações, se necessário
+  const handleTelaInicial = () => {
+    setMostrarTelaInicial(true);
+    setMostrarLogin(false);
+    setMostrarRemoteForm(false);
+    setExibirVerificarConexao(false);
+  };
+  
+  const handleExibirVerificarConexao = () => {
+    setExibirVerificarConexao(true);
+    setExibirMensagem(true);
+    setMostrarLogin(false);
+    setMostrarRemoteForm(false);
+    setMostrarTelaInicial(false);
   };
 
-  return (
-    <div>
-      {exibirMensagem && conectado ? <p>Conexão estabelecida</p> : null}
+  const handleLogout = () => {
+    setMostrarTelaInicial(false);
+    setMostrarLogin(true);
+    setMostrarRemoteForm(false);
+  };
 
-      {exibirLogin ? (
-        <Login onLoginSuccess={handleLoginSuccess} />
-      ) : (
-        <RemoteAcess />
+  const handleRemoteAccess = () => {
+    setExibirVerificarConexao(false);
+    setMostrarTelaInicial(false);
+    setMostrarLogin(false);
+    setMostrarRemoteForm(true);
+  };
+  const handleVoltar=()=>{
+    setMostrarTelaInicial(true);
+    setMostrarLogin(false);
+    setMostrarRemoteForm(false);
+    setExibirVerificarConexao(false);
+  }
+
+  return (
+    <div className="grade">
+      
+      {mostrarTelaInicial && (
+        <TelaInicial
+          onConexaoEstabelecida={() => handleExibirVerificarConexao(false)}          
+          onLogout={handleLogout}
+          onRemoteAccess={handleRemoteAccess}
+          exibirVerificarConexao={handleExibirVerificarConexao}
+        />
       )}
+
+      {mostrarLogin && (
+        <Login
+          onLoginSuccess={() => {
+            setMostrarTelaInicial(false);
+            setMostrarLogin(false);
+            setMostrarRemoteForm(true);
+          }}
+        />
+      )}
+
+      {mostrarRemoteForm && <RemoteForm />}
+
+      {exibirMensagem && <p>{mensagem}</p>}
     </div>
   );
 };
 
-export default VerificarConexao;
+export default App;
