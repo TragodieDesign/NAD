@@ -1,7 +1,8 @@
 {
   "username": "otelo",
   "password": "XgLuS!DYB%g3",
-  "timestamp": "2023-11-12T15:22:50.137Z",
+  "timestamp": "2023-11-13T03:12:54.918Z",
+  "logado": false,
   "connectionType": "ssh",
   "host": "127.0.0.1",
   "remoteUser": "otelo",

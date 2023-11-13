@@ -29,16 +29,21 @@ const Login = ({ onLoginSuccess, onLoginError }) => {
           setLoginError(null);
           onLoginSuccess();
           // Recarrega a página após o login bem-sucedido
-          window.location.reload();
         } else {
           setLoginError('Login ou senha incorretos');
-          onLoginError(message);
+          // Verifica se onLoginError é uma função antes de chamá-la
+          if (typeof onLoginError === 'function') {
+            onLoginError(message);
+          }
         }
       })
       .catch((error) => {
         const errorMessage = 'Erro ao autenticar';
         setLoginError(errorMessage);
-        onLoginError(errorMessage);
+        // Verifica se onLoginError é uma função antes de chamá-la
+        if (typeof onLoginError === 'function') {
+          onLoginError(errorMessage);
+        }
         console.error(errorMessage, error);
       });
   };

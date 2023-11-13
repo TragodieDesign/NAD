@@ -6,7 +6,9 @@ const app = express();
 const PORT = process.env.PORT || 3003;
 
 app.use(cors({
-  origin: '*', // Substitua pela origem do seu aplicativo React
+  origin: 'http://localhost:3000', // Substitua pela origem do seu aplicativo React
+  credentials: true,
+  exposedHeaders: 'Set-Cookie'
 }));
 
 // Middleware para analisar cookies

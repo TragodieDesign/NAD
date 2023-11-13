@@ -14,10 +14,10 @@ router.post('/', async (req, res) => {
   const { username, password, action } = req.body;
 
   if (action === 'logoff') {
-    // Lógica de logoff
-    // ...
+    const connectData = {
 
-    // Remover o cookie de autenticação
+      logado: false
+    };
     res.clearCookie('autenticado');
     const logoffSuccess = {
       message: 'Usuário deslogado com sucesso',
@@ -76,6 +76,7 @@ router.post('/', async (req, res) => {
           username,
           password,
           timestamp: new Date().toISOString(),
+          logado: true
         };
 
         try {
@@ -95,6 +96,7 @@ router.post('/', async (req, res) => {
 
               // Configurar o cookie na sessão
               res.cookie('autenticado', true, { httpOnly: true });
+              res.cookie('username', username, { httpOnly: true });
 
               const authSuccess = {
                 message: 'Usuário autenticado com sucesso',
@@ -133,5 +135,27 @@ router.post('/', async (req, res) => {
     }
   }
 });
+
+router.get('/verificar-login', async (req, res) => {
+  try {
+    const autenticado = req.cookies.autenticado === 'true';
+
+    if (autenticado) {
+      const jsonData = await fs.readFile(jsonFilePath, 'utf-8');
+      const connectData = JSON.parse(jsonData);
+
+      // Aqui, você pode adicionar o username ao response.json
+      res.json({ logado: true, username: connectData.username });
+      console.log(`Permanece autenticado como ${connectData.username}`);
+    } else {
+      res.json({ logado: false });
+    }
+  } catch (error) {
+    console.error('Erro ao verificar o login:', error);
+    res.status(500).json({ error: 'Erro ao verificar o login' });
+    console.log(`Erro ao verificar o login: ${error}`);
+  }
+});
+
 
 module.exports = router;
