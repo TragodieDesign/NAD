@@ -1,11 +1,11 @@
 {
   "username": "otelo",
   "password": "XgLuS!DYB%g3",
-  "timestamp": "2023-11-13T03:12:54.918Z",
-  "logado": false,
-  "connectionType": "ssh",
-  "host": "127.0.0.1",
-  "remoteUser": "otelo",
-  "remotePassword": "123",
-  "connected": true
+  "timestamp": "2023-11-20T20:58:45.392Z",
+  "logado": true,
+  "connectionType": "Web",
+  "host": "http://21312312321.com",
+  "remoteUser": "asdasda",
+  "remotePassword": "asdasdasd",
+  "connected": false
 }

@@ -4,7 +4,11 @@ import TelaInicial from './components/inicial/TelaInicial';
 import Login from './components/login/Login';
 import RemoteForm from './components/remote/RemoteForm';
 import axios from 'axios';
+import VerificarConexao from './components/conexao/VerificarConexao';
 
+
+/*
+axios.defaults.withCredentials = true;
 axios.interceptors.request.use(
   config => {
     // Obtém os cookies do navegador
@@ -19,6 +23,8 @@ axios.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
+*/
 axios.defaults.withCredentials = true;
 
 const App = () => {
@@ -48,16 +54,16 @@ const App = () => {
     verificarLogin();
   };
 
-useEffect(() => {
+//useEffect(() => {
     // Verificar o login imediatamente ao montar o componente
-    verificarLoginPeriodico();
+   // verificarLoginPeriodico();
 
     // Configurar verificação contínua a cada 5 segundos (ajuste conforme necessário)
-    const intervalId = setInterval(verificarLoginPeriodico, 5000);
+   // const intervalId = setInterval(verificarLoginPeriodico, 5000);
 
     // Limpar o intervalo ao desmontar o componente
-    return () => clearInterval(intervalId);
-  }, []);
+   // return () => clearInterval(intervalId);
+ // }, []);
   
 
   const handleTelaInicial = () => {
@@ -97,14 +103,19 @@ useEffect(() => {
   };
 
   return (
-    <div>
+ <div>
+<div className='main'>
+<div className='header'>
+        <img src='logo-nb.png'></img>
+        <h1>Nublify Smart Device</h1>
+      </div>
+<div className="grade">
 
-    <div className="grade">
-      {mostrarTelaInicial && (
-        <TelaInicial
-          onConexaoEstabelecida={() => handleExibirVerificarConexao(false)}
-          onLogout={handleLogout}
-          onRemoteAccess={handleRemoteAccess}
+    <div className="body-app">
+
+      {handleExibirVerificarConexao  && (
+        <VerificarConexao
+         
           exibirVerificarConexao={exibirVerificarConexao}
           logado={logado} // Passa a prop logado para o componente TelaInicial
         />
@@ -128,6 +139,13 @@ useEffect(() => {
 
     </div>
     </div>
+</div>
+<div className='sidebar'>
+
+</div>
+
+
+ </div>
   );
 };
 

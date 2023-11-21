@@ -1,23 +1,24 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCode,faHouseLaptop, faLaptopCode } from '@fortawesome/free-solid-svg-icons';
-
+import { faCode, faHouseLaptop, faLaptopCode, faGlobe, faCircleInfo } from '@fortawesome/free-solid-svg-icons';
+import { Tooltip as ReactTooltip } from 'react-tooltip'
 
 const RemoteForm = () => {
   const [formData, setFormData] = useState({
-
     connectionType: '',
     host: '',
     remoteUser: '',
     remotePassword: '',
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const [selectedConnection, setSelectedConnection] = useState(null);
+
+  const handleOptionClick = (value) => {
     setFormData({
       ...formData,
-      [name]: value,
+      connectionType: value,
     });
+    setSelectedConnection(value);
   };
 
   const handleSubmit = async (e) => {
@@ -30,6 +31,7 @@ const RemoteForm = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
+        credentials: 'include',
       });
 
       if (response.ok) {
@@ -44,88 +46,103 @@ const RemoteForm = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-<div className= 'connection-type'>
-  <div className='connection-title'>
-    <h1>Escolha a sua conexão:</h1>
-  </div>
-<div className='radio-icons-wrapper'>
+      <div className='connection-type'>
+        <div className='connection-title'>
+          <h1>Escolha a sua conexão: 
+            <sup>
+            <a data-tooltip-id="dica" data-tooltip-content="Utilize os dados de conexão com sua máquina remota">
+              <FontAwesomeIcon icon={faCircleInfo} className='tips'/>  </a>
+            </sup>
+        
+            
+              
+           </h1>
 
-<div className='conection-option'>
-<div className='connect-icon'>
-  <FontAwesomeIcon icon={faCode} />
-  </div>
-  <p>SSH</p>
 
-  <input type="radio" value="SSH" name="connectionType" onChange={handleChange} /> 
-</div>
-<div className='conection-option'>
-<div className='connect-icon'>
-  <FontAwesomeIcon icon={faHouseLaptop} />
-  </div>
-  <p>VNC</p>
-  <input type="radio" value="VNC" name="connectionType" onChange={handleChange} /> 
-</div>
-<div className='conection-option'>
-<div className='connect-icon'>
-<FontAwesomeIcon icon={faLaptopCode} />
-  </div>
-  <p>RDP</p>
-  <input type="radio" value="RDP" name="connectionType" onChange={handleChange} /> 
-</div>
-
-</div>
-
-</div>
+<ReactTooltip id="dica" />
+        </div>
+        <div className='radio-icons-wrapper'>
+          <div
+            className={`conection-option ${selectedConnection === 'SSH' ? 'selected-ssh' : ''}`}
+            onClick={() => handleOptionClick('SSH')}
+          >
+            <div className='connect-icon'>
+              <FontAwesomeIcon icon={faCode} />
+            </div>
+            <p>SSH</p>
+          </div>
+          <div
+            className={`conection-option ${selectedConnection === 'VNC' ? 'selected-vnc' : ''}`}
+            onClick={() => handleOptionClick('VNC')}
+          >
+            <div className='connect-icon'>
+              <FontAwesomeIcon icon={faHouseLaptop} />
+            </div>
+            <p>VNC</p>
+          </div>
+          <div
+            className={`conection-option ${selectedConnection === 'RDP' ? 'selected-rdp' : ''}`}
+            onClick={() => handleOptionClick('RDP')}
+          >
+            <div className='connect-icon'>
+              <FontAwesomeIcon icon={faLaptopCode} />
+            </div>
+            <p>RDP</p>
+          </div>
+          <div
+            className={`conection-option ${selectedConnection === 'Web' ? 'selected-web' : ''}`}
+            onClick={() => handleOptionClick('Web')}
+          >
+            <div className='connect-icon'>
+              <FontAwesomeIcon icon={faGlobe} />
+            </div>
+            <p>WEB</p>
+          </div>
+        </div>
+      </div>
       <br />
       <div className='inputs-wrapper'>
-      
-      <div className='inputbox'>
-
+        <div className='inputbox'>
           <input
-          className='input'
+          required
+            className='input'
             type="url"
             name="host"
             value={formData.host}
-            onChange={handleChange}
+            onChange={(e) => setFormData({ ...formData, host: e.target.value })}
             placeholder='Insira o IP ou host:'
           />
-
           <i></i>
-        
-      </div>
-      <div className='inputbox'>
-
+        </div>
+        <div className='inputbox'>
           <input
-          className='input'
+          required
+            className='input'
             type="text"
             name="remoteUser"
-            value={formData.user}
-            onChange={handleChange}
+            value={formData.remoteUser}
+            onChange={(e) => setFormData({ ...formData, remoteUser: e.target.value })}
             placeholder='Insira o usuário do acesso remoto:'
           />
-
           <i></i>
-        
-      </div>
-
-      <div className='inputbox'>
+        </div>
+        <div className='inputbox'>
           <input
+          required
             className='input'
             type="password"
             name="remotePassword"
-            value={formData.password}
-            onChange={handleChange}
+            value={formData.remotePassword}
+            onChange={(e) => setFormData({ ...formData, remotePassword: e.target.value })}
             placeholder='Insira a senha do acesso remoto:'
           />
-
-    <i></i>
-        
+          <i></i>
+        </div>
       </div>
-      
-      </div>
-
       <div className='button-wrapper'>
-        <button type="submit" className='btn-grad'>Conectar</button>
+        <button type="submit" className='remote-btn'>
+          Conectar
+        </button>
       </div>
     </form>
   );

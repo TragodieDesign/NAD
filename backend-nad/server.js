@@ -6,7 +6,7 @@ const app = express();
 const PORT = process.env.PORT || 3003;
 
 app.use(cors({
-  origin: 'http://localhost:3000', // Substitua pela origem do seu aplicativo React
+  origin: 'http://localhost:3000', 
   credentials: true,
   exposedHeaders: 'Set-Cookie'
 }));
@@ -17,11 +17,13 @@ app.use(cookieParser());
 // Middleware para analisar o corpo da requisição JSON
 app.use(express.json());
 
-// Importe e use os módulos de autenticação, verificação de conexão e exportação de JSON
+//Importar rotas
 const authRouter = require('./auth');
 const networkRouter = require('./network');
 const makeJsonRouter = require('./make-json');
 const synthWifiRouter = require('./synth-wifi');
+
+//definir rotas
 
 app.use('/auth', authRouter);
 app.use('/network', networkRouter);

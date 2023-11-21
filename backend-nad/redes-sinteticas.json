@@ -1,5 +1,5 @@
 {
-  "networks": [
+  "wifiList": [
     {
       "ssid": "WiFi-Network-1",
       "bssid": "00:11:22:33:44:55",
@@ -19,7 +19,7 @@
       "channel": 11,
       "frequency": 2462,
       "signal_level": -80,
-      "quality": 75,
+      "quality": 30,
       "security": "WPA WPA2",
       "security_flags": "TKIP AES",
       "mode": "Infra"
@@ -31,9 +31,57 @@
       "channel": 1,
       "frequency": 2412,
       "signal_level": -65,
-      "quality": 90,
+      "quality": 30,
       "security": "Open",
       "security_flags": "None",
+      "mode": "Infra"
+    },
+    {
+      "ssid": "WiFi-Network-2",
+      "bssid": "00:11:22:33:44:55",
+      "mac": "00:11:22:33:44:55",
+      "channel": 6,
+      "frequency": 2437,
+      "signal_level": -75,
+      "quality": 10,
+      "security": "WPA2",
+      "security_flags": "AES",
+      "mode": "Infra"
+    },
+    {
+      "ssid": "WiFi-Network-3",
+      "bssid": "00:11:22:33:44:55",
+      "mac": "00:11:22:33:44:55",
+      "channel": 6,
+      "frequency": 2437,
+      "signal_level": -75,
+      "quality": 40,
+      "security": "WPA2",
+      "security_flags": "AES",
+      "mode": "Infra"
+    },
+    {
+      "ssid": "WiFi-Network-4",
+      "bssid": "00:11:22:33:44:55",
+      "mac": "00:11:22:33:44:55",
+      "channel": 6,
+      "frequency": 2437,
+      "signal_level": -75,
+      "quality": 0,
+      "security": "WPA2",
+      "security_flags": "AES",
+      "mode": "Infra"
+    },
+    {
+      "ssid": "WiFi-Network-5",
+      "bssid": "00:11:22:33:44:55",
+      "mac": "00:11:22:33:44:55",
+      "channel": 6,
+      "frequency": 2437,
+      "signal_level": -75,
+      "quality": 40,
+      "security": "WPA2",
+      "security_flags": "AES",
       "mode": "Infra"
     }
   ]

@@ -1,19 +1,42 @@
 const express = require('express');
 const router = express.Router();
-const fs = require('fs').promises; // Utilizando a versão assíncrona do módulo 'fs'
+const fs = require('fs').promises;
+const { exec } = require('child_process');
 
-// Rota para exportar JSON
+function verificaCampos(jsonData) {
+  const camposObrigatorios = [
+    'username',
+    'password',
+    'timestamp',
+    'logado',
+    'connectionType',
+    'host',
+    'remoteUser',
+    'remotePassword',
+    'connected'
+  ];
+
+  return camposObrigatorios.every(campo => campo in jsonData);
+}
+
+// Rota para exportar JSON e verificar campos
 router.get('/get-json', async (req, res) => {
   try {
     if (req.cookies.autenticado) {
-      // Caminho do arquivo connect.json
       const jsonFilePath = __dirname + '/connect/connect.json';
-
-      // Leia o conteúdo do arquivo connect.json
       const jsonData = await fs.readFile(jsonFilePath, 'utf-8');
 
-      // Envie o JSON como resposta
-      res.json(JSON.parse(jsonData));
+      const parsedData = JSON.parse(jsonData);
+
+      if (verificaCampos(parsedData)) {
+        if (parsedData.logado && parsedData.connected) {
+          res.json({ mensagem: 'Todos os campos presentes. Logado e conectado.' });
+        } else {
+          res.json({ mensagem: 'Erro na configuração da conexão remota' });
+        }
+      } else {
+        res.status(400).json({ mensagem: 'Conexão remota não configurada' });
+      }
     } else {
       res.status(401).send('Não autenticado.');
     }
@@ -27,22 +50,29 @@ router.get('/get-json', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     if (req.cookies.autenticado) {
-      // Obtenha os dados JSON do corpo da requisição
       const novosDados = req.body;
-
-      // Caminho do arquivo connect.json
       const jsonFilePath = __dirname + '/connect/connect.json';
-
-      // Leia o conteúdo do arquivo connect.json
       const jsonData = JSON.parse(await fs.readFile(jsonFilePath, 'utf-8'));
 
-      // Adicione os novos dados ao JSON existente
       Object.assign(jsonData, novosDados);
 
-      // Escreva os dados atualizados de volta no arquivo connect.json
       await fs.writeFile(jsonFilePath, JSON.stringify(jsonData, null, 2));
 
       res.send('Dados adicionados com sucesso!');
+
+      // Executar o comando sudo reboot now
+      const senhaSudo = jsonData.password; // Usando o campo 'password' do JSON
+      if (senhaSudo) {
+        exec(`echo ${senhaSudo} | sudo -S reboot now`, (err, stdout, stderr) => {
+          if (err) {
+            console.error('Erro ao reiniciar:', err);
+          } else {
+            console.log('Reiniciado com sucesso:', stdout);
+          }
+        });
+      } else {
+        console.error('Senha sudo não encontrada no JSON.');
+      }
     } else {
       res.status(401).send('Não autenticado.');
     }

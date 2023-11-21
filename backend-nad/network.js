@@ -63,6 +63,28 @@ router.get('/', (req, res) => {
   });
 });
 
+router.post('/disconnect', (req, res) => {
+  wifi.init({
+    iface: null // network interface, choose a random wifi interface if set to null
+  });
+  wifi.disconnect(error => {
+    if (error) {
+      console.log(error);
+      const errorResponse={
+        error: 'Não foi possível se desconectar'
+      }
+      res.status(500).json(errorResponse)
+    } else {
+      console.log('Disconnected');
+      const successMessage={
+        success:'Desconectado com sucesso'
+      }
+      res.status(200).json(successMessage)
+    }
+  });
+  
+});
+
 // Rota para autenticar em uma rede Wi-Fi com base no JSON recebido
 router.post('/authenticate', (req, res) => {
   const { ssid, password } = req.body;

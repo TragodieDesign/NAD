@@ -6,8 +6,8 @@ const fs = require('fs').promises;
 const senhaPadrao = '123';
 const wifiInfo = {
   ssid: '',
-  senha: '',
-  redes: [] // Adicionando uma propriedade para armazenar a lista de redes WiFi
+  password: '',
+  wifiList: [] // Mantendo a propriedade como wifiList
 };
 
 // Rota para obter as informações do WiFi (GET)
@@ -19,12 +19,12 @@ router.get('/', async (req, res) => {
 
     // Atualiza as informações do WiFi com os dados do arquivo JSON
     wifiInfo.ssid = jsonData.ssid;
-    wifiInfo.senha = jsonData.senha;
-    wifiInfo.redes = jsonData.networks || []; // Assumindo que as redes estão em um array chamado "networks"
+    wifiInfo.password = jsonData.password;
+    wifiInfo.wifiList = jsonData.wifiList || []; // Mantendo a propriedade como wifiList
 
     res.status(200).json({
       ssid: wifiInfo.ssid,
-      redes: wifiInfo.redes, // Adicionando as redes WiFi à resposta
+      wifiList: wifiInfo.wifiList, // Mantendo a propriedade como wifiList
       message: 'Informações do WiFi obtidas com sucesso!'
     });
   } catch (error) {
@@ -36,10 +36,10 @@ router.get('/', async (req, res) => {
 // Rota para configurar o WiFi (POST)
 router.post('/', async (req, res) => {
   try {
-    const { senha, ssid } = req.body;
+    const { password, ssid } = req.body;
 
     // Verifica se a senha fornecida corresponde à senha padrão
-    if (senha !== senhaPadrao) {
+    if (password !== senhaPadrao) {
       return res.status(401).json({ error: 'Senha incorreta' });
     }
 

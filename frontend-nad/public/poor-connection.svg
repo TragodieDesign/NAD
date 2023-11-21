@@ -1,0 +1,14 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 165" width="50" height="43">
+	<title>wifi-eps</title>
+	<defs>
+		<clipPath clipPathUnits="userSpaceOnUse" id="cp1">
+			<path d="m0 0h192v165h-192z"/>
+		</clipPath>
+	</defs>
+	<style>
+		.s0 { fill: #ffa200 } 
+	</style>
+	<g id="Page 1 copy 2" clip-path="url(#cp1)">
+		<path id="Path 1" fill-rule="evenodd" class="s0" d="m96.5 123.8c-5.2 0-10.5 2.1-14 5.9-3.7 3.7-5.8 8.7-5.8 13.9 0 5.2 2.1 10.2 5.8 14 3.7 3.7 8.8 5.8 14 5.8 5.2 0 10.4-2.1 13.9-5.8 3.8-3.8 5.9-8.8 5.9-14 0-5.2-2.1-10.2-5.9-13.9-3.7-3.8-8.7-5.9-13.9-5.9zm-35-29.3c-4.6 3.5-5.2 10-1.7 14.5 3.5 4.6 10.2 5.3 14.6 1.7 0.8-0.6 22.9-17.7 41.6-0.2 2.1 1.9 4.6 2.7 7.1 2.7 2.7 0 5.7-1 7.7-3.3 4-4.2 3.8-10.9-0.6-14.6-25.2-23.3-56-10.6-68.7-0.8z"/>
+	</g>
+</svg>
