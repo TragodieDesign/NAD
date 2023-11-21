@@ -6,9 +6,10 @@ const app = express();
 const PORT = process.env.PORT || 3003;
 
 app.use(cors({
-  origin: 'http://localhost:3000', 
+  origin: 'http://localhost:3000',
   credentials: true,
-  exposedHeaders: 'Set-Cookie'
+  exposedHeaders: 'Set-Cookie',
+
 }));
 
 // Middleware para analisar cookies

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import "./Wifi.styles.css";
-import WifiSignal from './Wifi-signal'
+import WifiSignal from './Wifi-signal';
 
 const ConexaoWifi = ({ onConexaoEstabelecida }) => {
   const [wifiList, setWifiList] = useState([]);
@@ -16,6 +16,7 @@ const ConexaoWifi = ({ onConexaoEstabelecida }) => {
     const carregarRedesWifi = async () => {
       try {
         const response = await axios.get('http://localhost:3003/network');
+        console.log(response)
         const { wifiList } = response.data;
 
         setWifiList(wifiList);
@@ -25,8 +26,8 @@ const ConexaoWifi = ({ onConexaoEstabelecida }) => {
     };
 
     carregarRedesWifi();
-  }, []); 
-  
+  }, []);
+
 
   const getStatusIcon = (quality) => {
     if (quality >= 70) {
@@ -39,34 +40,32 @@ const ConexaoWifi = ({ onConexaoEstabelecida }) => {
       return "error";
     }
   };
+
   const handleReload = () => {
     window.location.reload();
   };
-  const hanldeDisconnect = async ()=>{
+
+  const hanldeDisconnect = async () => {
     try {
-      const response =await axios.post('http://localhost:3003/network/disconnect',)
-      if (response.status ===200 ){
+      const response = await axios.post('http://localhost:3003/network/disconnect');
+
+      if (response.status === 200) {
         setConectado(false);
-        setMensagem('Você foi desconectado')
+        setMensagem('Você foi desconectado');
+      } else {
+        setMensagem('Erro ao se desconectar');
       }
-      else{
-        setMensagem('Erro ao se desconectar')
-      }
-    }catch (error){
+    } catch (error) {
       setMensagem(`Erro ao se desconectar: ${error.message}`);
     }
-  } 
-
+  };
 
   const handleConectar = async () => {
     try {
-      const response = await axios.post('http://localhost:3003/network', {
+      const response = await axios.post('http://localhost:3003/network/authenticate', {
         ssid: selectedNetwork.ssid,
         password: password,
       });
-      const handleVoltar = () => {
-        setMostrarConexaoWifi(false);
-      };
 
       if (response.status === 200) {
         setConectado(true);
@@ -98,7 +97,7 @@ const ConexaoWifi = ({ onConexaoEstabelecida }) => {
         <div className='connect-wifi-wrapper'>
           <div className='response-wifi'>
             <h2>Conexão Wi-fi</h2>
-            
+
             <p>Escolha uma rede abaixo, clique em "conectar" e digite a senha da sua rede wi-fi</p>
             <h3>Redes Wi-Fi disponíveis:</h3>
             {wifiList && wifiList.length > 0 ? (
@@ -115,7 +114,7 @@ const ConexaoWifi = ({ onConexaoEstabelecida }) => {
               </ul>
             ) : (
               <p>Nenhuma rede Wi-Fi disponível.</p>
-              
+
             )}
           </div>
           {selectedNetwork && (
@@ -133,19 +132,16 @@ const ConexaoWifi = ({ onConexaoEstabelecida }) => {
                 </div>
                 <button onClick={handleConectar} className='connect-wifi-btn'>Conectar</button>
                 {mensagem && exibirResponseWifi && <p>{mensagem}</p>}
-                
               </div>
-              
             </div>
           )}
         </div>
       )}
       <div className='wifi-footer'>
-      <button onClick={hanldeDisconnect} className='disconnect-btn'>Desconectar</button>
-      <button onClick={handleReload} className='reload-btn'>Voltar</button>
+        <button onClick={hanldeDisconnect} className='disconnect-btn'>Desconectar</button>
+        <button onClick={handleReload} className='reload-btn'>Voltar</button>
       </div>
     </div>
-    
   );
 };
 

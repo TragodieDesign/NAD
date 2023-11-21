@@ -19,7 +19,7 @@ router.get('/', (req, res) => {
   checkInternetConnection((isOnline) => {
     if (!isOnline) {
       wifi.init({
-        iface: null // network interface, choose a random wifi interface if set to null
+      //  iface: null
       });
       wifi.scan((error, networks) => {
         if (error) {
@@ -48,7 +48,7 @@ router.get('/', (req, res) => {
             wifiList: wifiList
           };
 
-          res.status(400).json(response);
+          res.status(200).json(response);
           console.log('Sem conexão com a internet');
         }
       });
@@ -82,7 +82,7 @@ router.post('/disconnect', (req, res) => {
       res.status(200).json(successMessage)
     }
   });
-  
+
 });
 
 // Rota para autenticar em uma rede Wi-Fi com base no JSON recebido
