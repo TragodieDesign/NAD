@@ -3,6 +3,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCode, faHouseLaptop, faLaptopCode, faGlobe, faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import { Tooltip as ReactTooltip } from 'react-tooltip'
 
+
+
+const ipLocal = (process.env.REACT_APP_IP_BACK)
+
 const RemoteForm = () => {
   const [formData, setFormData] = useState({
     connectionType: '',
@@ -25,7 +29,7 @@ const RemoteForm = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:3003/make-json', {
+      const response = await fetch(`${ipLocal}/make-json`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -5,6 +5,12 @@ import VerificarConexao from '../conexao/VerificarConexao';
 import Login from '../login/Login';
 import RemoteForm from '../remote/RemoteForm';
 
+
+const ipLocal = (process.env.REACT_APP_IP_BACK)
+
+
+
+
 const TelaInicial = ({ onConexaoVerificada, onLogout }) => {
   const [exibirVerificarConexao, setExibirVerificarConexao] = useState(false);
   const [mostrarLogin, setMostrarLogin] = useState(false);
@@ -17,7 +23,7 @@ const TelaInicial = ({ onConexaoVerificada, onLogout }) => {
   useEffect(() => {
     const verificarLogin = async () => {
       try {
-        const response = await axios.get('http://localhost:3003/auth/verificar-login');
+        const response = await axios.get(`${ipLocal}/auth/verificar-login`);
         setLogado(response.data.logado);
         if (response.data.logado) {
           setUsername(response.data.username);

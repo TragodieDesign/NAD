@@ -8,7 +8,14 @@ import { Tooltip as ReactTooltip } from 'react-tooltip'
 import "./Wifi.styles.css";
 
 
+
+
+
+
+
 import axios from 'axios';
+const ipLocal = (process.env.REACT_APP_IP_BACK)
+
 const VerificarConexao = ({ onConexaoEstabelecida }) => {
   const [exibirConexaoCabo, setExibirConexaoCabo] = useState(false);
   const [exibirConexaoWifi, setExibirConexaoWifi] = useState(false);
@@ -28,7 +35,8 @@ const VerificarConexao = ({ onConexaoEstabelecida }) => {
 
   const handleConexaoFinalizada = async () => {
     try {
-      const response = await axios.get('http://localhost:3003/network');
+      
+      const response = await axios.get(`${ipLocal}/network`);
       if (response.status === 200) {
         setExibirLogin(true);
         setExibirVerificarConexao(false);

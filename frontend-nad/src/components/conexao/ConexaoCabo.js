@@ -3,16 +3,20 @@ import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 
+const ipLocal = (process.env.REACT_APP_IP_BACK)
+
+
+
 const ConexaoCabo = ({ onConexaoEstabelecida }) => {
   const [conectado, setConectado] = useState(false);
   const handleReload = () => {
     window.location.reload();
   };
-
+ 
   useEffect(() => {
     const verificarConexao = async () => {
       try {
-        const response = await axios.get('http://localhost:3003/network');
+        const response = await axios.get(`${ipLocal}/network`);
         if (response.status === 200) {
           setConectado(true);
           onConexaoEstabelecida();

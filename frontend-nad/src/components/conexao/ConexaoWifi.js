@@ -3,6 +3,10 @@ import axios from 'axios';
 import "./Wifi.styles.css";
 import WifiSignal from './Wifi-signal';
 
+
+const ipLocal = (process.env.REACT_APP_IP_BACK)
+
+
 const ConexaoWifi = ({ onConexaoEstabelecida }) => {
   const [wifiList, setWifiList] = useState([]);
   const [selectedNetwork, setSelectedNetwork] = useState(null);
@@ -15,7 +19,7 @@ const ConexaoWifi = ({ onConexaoEstabelecida }) => {
   useEffect(() => {
     const carregarRedesWifi = async () => {
       try {
-        const response = await axios.get('http://localhost:3003/network');
+        const response = await axios.get(`${ipLocal}:3003/network`);
         console.log(response)
         const { wifiList } = response.data;
 
@@ -47,7 +51,7 @@ const ConexaoWifi = ({ onConexaoEstabelecida }) => {
 
   const hanldeDisconnect = async () => {
     try {
-      const response = await axios.post('http://localhost:3003/network/disconnect');
+      const response = await axios.post(`${ipLocal}/network/disconnect`);
 
       if (response.status === 200) {
         setConectado(false);
@@ -62,7 +66,7 @@ const ConexaoWifi = ({ onConexaoEstabelecida }) => {
 
   const handleConectar = async () => {
     try {
-      const response = await axios.post('http://localhost:3003/network/authenticate', {
+      const response = await axios.post(`${ipLocal}/network/authenticate`, {
         ssid: selectedNetwork.ssid,
         password: password,
       });

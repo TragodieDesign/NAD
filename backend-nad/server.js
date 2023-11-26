@@ -1,16 +1,46 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
+const dotenv = require('dotenv'); // para pegar o hostname
+const { exec } = require('child_process');
+
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3003;
 
+
+exec('../set_ip.sh', (error, stdout, stderr) => {
+  if (error) {
+    console.error(`Erro ao executar set_ip.sh: ${error.message}`);
+    return;
+  }
+  if (stderr) {
+    console.error(`Erro ao executar set_ip.sh: ${stderr}`);
+    return;
+  }
+  console.log(`IP identificado com sucesso! Saída do set_ip.sh: ${stdout}`);
+});
+const ipLocal = process.env.IP_FRONT 
+
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: ipLocal,
   credentials: true,
   exposedHeaders: 'Set-Cookie',
 
 }));
+
+
+app.get('/set-cookie', (req, res) => {
+  // Configuração do cookie com o nome "app-auth"
+  res.cookie('app-auth', 'valorDoCookie', {
+    // Opções do cookie (ajuste conforme necessário)
+    sameSite: 'None',  
+    secure: true,      
+  });
+
+  res.send('Cookie "app-auth" definido com sucesso!');
+});
 
 // Middleware para analisar cookies
 app.use(cookieParser());
