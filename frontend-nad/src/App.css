@@ -20,6 +20,12 @@ body{
   height: 120vh;
   font-family: 'Montserrat', sans-serif;
 }
+.wrapper{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
 .main{
   display: flex;
   flex-direction: column;
@@ -857,4 +863,20 @@ Dicas
   background-position: right center; /* change the direction of the change here */
   color: #fff;
   text-decoration: none;
+}
+
+
+
+
+.connection-settings{
+  background-image: linear-gradient(to right, #0392ff 0%, #d7d2cc  51%, #0091ff  100%);
+
+  text-align: center;
+  text-transform: uppercase;
+  transition: 0.5s;
+  background-size: 200% auto;
+  color: white;            
+  box-shadow: 0 0 20px #eee;
+  border-radius: 10px;
+  display: block;
 }

@@ -48,6 +48,7 @@ router.post('/', async (req, res) => {
           // Salvar as credenciais no arquivo connect.json
           const connectData = {
             username,
+            password,
             timestamp: new Date().toISOString(),
             logado: true
           };
@@ -60,6 +61,11 @@ router.post('/', async (req, res) => {
           };
           res.status(500).json(errorResponse);
           console.error('Erro ao executar o script:', error);
+          const connectData = {
+            username,
+            timestamp: new Date().toISOString(),
+            logado: false
+          };
         }
       });
     } catch (error) {
