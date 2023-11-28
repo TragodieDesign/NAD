@@ -21,10 +21,26 @@ exec('../set_ip.sh', (error, stdout, stderr) => {
   }
   console.log(`IP identificado com sucesso! Saída do set_ip.sh: ${stdout}`);
 });
-const ipLocal = process.env.IP_FRONT 
+
+
+
+const ipCors = {
+  origin: function (origin, callback) {
+    // Lista de domínios permitidos
+    const allowedOrigins = ['http://localhost:3000', `${process.env.IP_FRONT}`];
+
+    // Verificando se o domínio da requisição está na lista de permitidos
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+};
+
 
 app.use(cors({
-  origin: ipLocal,
+  origin: ipCors,
   credentials: true,
   exposedHeaders: 'Set-Cookie',
 

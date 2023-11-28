@@ -88,6 +88,7 @@ router.post('/disconnect', (req, res) => {
 // Rota para autenticar em uma rede Wi-Fi com base no JSON recebido
 router.post('/authenticate', (req, res) => {
   const { ssid, password } = req.body;
+  
 
   wifi.connect({ ssid, password }, (error) => {
     if (error) {

@@ -13,15 +13,6 @@ const jsonFilePath = path.join(jsonDirPath, 'connect.json');
 router.post('/', async (req, res) => {
   const { username, password, action } = req.body;
 
-  if (action === 'logoff') {
-    res.clearCookie('autenticado');
-    const logoffSuccess = {
-      message: 'Usuário deslogado com sucesso',
-      success: 'logoff',
-    };
-    res.status(200).json(logoffSuccess);
-    console.log('Usuário deslogado com sucesso');
-  } else {
     try {
       // Autenticação com o script authenticate.sh
       const authCommand = `echo '${password}' | sudo -S ./authenticate.sh ${username}`;
@@ -77,7 +68,7 @@ router.post('/', async (req, res) => {
       console.error('Erro ao autenticar o usuário:', error);
     }
   }
-});
+);
 
 router.get('/verificar-login', async (req, res) => {
   try {
@@ -97,5 +88,38 @@ router.get('/verificar-login', async (req, res) => {
     res.status(500).json({ error: 'Erro ao verificar o login' });
   }
 });
+
+router.post('/logoff', async (req,res)=>{
+  const {action } = req.body;
+  if (action === 'logoff') {
+    res.clearCookie('autenticado');
+    const logoffSuccess = {
+      message: 'Usuário deslogado com sucesso',
+      success: 'logoff',
+    }
+ 
+    res.status(200).json(logoffSuccess);
+    console.log('Usuário deslogado com sucesso');
+    const connectData = {
+      timestamp: new Date().toISOString(),
+      logado: false
+    };
+    await fs.writeFile(jsonFilePath, JSON.stringify(connectData, null, 2));
+  } else {
+    const errorLogoff = {
+      message: 'Erro ao executar o script',
+      error: error.message
+  }}
+  res.status(500).json(errorLogoff);
+  console.log("Erro ao desconectar", error)
+})
+
+
+
+
+
+
+
+
 
 module.exports = router;
