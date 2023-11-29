@@ -55,15 +55,27 @@ const VerificarConexao = ({ onConexaoEstabelecida }) => {
     }
   };
 
+  
+
   useEffect(() => {
     const verificarConexao = async () => {
       try {
         const response = await axios.get(`${ipLocal}/network`);
-        if (response.status === 200) {
-          setConectado(true);
-          onConexaoEstabelecida();
+        console.log(response);
+  
+        if (response.data && (response.data.success || response.data.error)) {
+          console.log(response.data.success || response.data.error);
+  
+          // Aqui você pode usar a propriedade que indica sucesso ou erro
+          if (response.data.success) {
+            setConectado(true);
+            onConexaoEstabelecida();
+          } else {
+            // Continua verificando a cada 2 segundos se a conexão foi estabelecida
+            setTimeout(verificarConexao, 2000);
+          }
         } else {
-          // Continua verificando a cada 2 segundos se a conexão foi estabelecida
+          // Resposta inesperada, continua verificando
           setTimeout(verificarConexao, 2000);
         }
       } catch (error) {
@@ -71,9 +83,11 @@ const VerificarConexao = ({ onConexaoEstabelecida }) => {
         setTimeout(verificarConexao, 2000);
       }
     };
-
+  
     verificarConexao();
   }, [onConexaoEstabelecida]);
+  
+  
 
 
 
@@ -92,16 +106,15 @@ const VerificarConexao = ({ onConexaoEstabelecida }) => {
     <div className='connect-intro'>
       {exibirVerificarConexao && (
         <div className='connect-intro'>
-          <h2>Bem vindo(a)<br></br> ao Nublify Smart Device  
+          
+          <p>Para iniciar, selecione um método de conexão com a internet para iniciar a sua conexão remota:
+
           <sup>
             <a data-tooltip-id="dica" data-tooltip-content="O acesso à internet é essencial para poder acessar sua máquina remota">
               <FontAwesomeIcon icon={faCircleInfo} className='tips'/>  </a>
             </sup>
-            
-          
-          </h2>
-          <ReactTooltip id="dica" />
-          <p>Para iniciar, selecione um método de conexão com a internet para iniciar a sua conexão remota:</p>
+            <ReactTooltip id="dica" />
+          </p>
           <div className='connect-options'>
             <button className='connect-cable' onClick={handleConexaoCabo}>
               <FontAwesomeIcon icon={faEthernet} />

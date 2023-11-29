@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCode, faHouseLaptop, faLaptopCode, faGlobe, faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import { Tooltip as ReactTooltip } from 'react-tooltip'
-
+import FormSSH from './FormSSH';
+import FormVNC from './FormVNC';
+import FormRDP from './FormRDP';
+import FormWEB from './FormWEB';
 
 
 const ipLocal = (process.env.REACT_APP_IP_BACK)
@@ -107,42 +110,11 @@ const RemoteForm = () => {
       </div>
       <br />
       <div className='inputs-wrapper'>
-        <div className='inputbox'>
-          <input
-          required
-            className='input'
-            type="url"
-            name="host"
-            value={formData.host}
-            onChange={(e) => setFormData({ ...formData, host: e.target.value })}
-            placeholder='Insira o IP ou host:'
-          />
-          <i></i>
-        </div>
-        <div className='inputbox'>
-          <input
-          required
-            className='input'
-            type="text"
-            name="remoteUser"
-            value={formData.remoteUser}
-            onChange={(e) => setFormData({ ...formData, remoteUser: e.target.value })}
-            placeholder='Insira o usuário do acesso remoto:'
-          />
-          <i></i>
-        </div>
-        <div className='inputbox'>
-          <input
-          required
-            className='input'
-            type="password"
-            name="remotePassword"
-            value={formData.remotePassword}
-            onChange={(e) => setFormData({ ...formData, remotePassword: e.target.value })}
-            placeholder='Insira a senha do acesso remoto:'
-          />
-          <i></i>
-        </div>
+
+      {selectedConnection === 'SSH' && <FormSSH />}
+      {selectedConnection === 'VNC' && <FormVNC />}
+      {selectedConnection === 'RDP' && <FormRDP />}
+      {selectedConnection === 'WEB' && <FormWEB />}
       </div>
       <div className='button-wrapper'>
         <button type="submit" className='remote-btn'>

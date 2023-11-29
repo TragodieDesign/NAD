@@ -5,7 +5,7 @@ import VerificarConexao from '../conexao/VerificarConexao';
 import Login from '../login/Login';
 import RemoteForm from '../remote/RemoteForm';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEthernet, faWifi,faCircleInfo } from '@fortawesome/free-solid-svg-icons';
+import { faEthernet, faWifi,faCircleInfo, faPlugCircleXmark,faArrowLeft,faUserSlash,faUser,faGear } from '@fortawesome/free-solid-svg-icons';
 import { Tooltip as ReactTooltip } from 'react-tooltip'
 
 
@@ -14,12 +14,12 @@ const ipLocal = (process.env.REACT_APP_IP_BACK)
 
 
 
-const TelaInicial = ({ onConexaoEstabelecida, }) => {
-  const [conectado, setConectado] = useState(false);
+const TelaInicial = () => {
+  const [onConexaoEstabelecida, setConectado] = useState(false);
   const [exibirVerificarConexao, setExibirVerificarConexao] = useState(false);
   const [mostrarLogin, setMostrarLogin] = useState(false);
   const [mostrarRemoteForm, setMostrarRemoteForm] = useState(false);
-  const [exibirTelaInicial, setMostrarTelaInicial] = useState(true);
+  const [mostrarTelaInicial, setExibirTelaInicial] = useState(true);
 
   const [username, setUsername] = useState('');
   const [logado, setLogado] = useState(false);
@@ -45,7 +45,7 @@ const TelaInicial = ({ onConexaoEstabelecida, }) => {
   }, [username, logado]);
 
   const handleTelaInicial = () => {
-    setMostrarTelaInicial(true);
+    setExibirTelaInicial(true);
     setMostrarLogin(false);
     setMostrarRemoteForm(false);
     setExibirVerificarConexao(false);
@@ -55,46 +55,31 @@ const TelaInicial = ({ onConexaoEstabelecida, }) => {
     setExibirVerificarConexao(true);
     setMostrarLogin(false);
     setMostrarRemoteForm(false);
-    setMostrarTelaInicial(false);
+    setExibirTelaInicial(false);
   };
 
   const handleMostrarLogin = () => {
     setExibirVerificarConexao(false);
     setMostrarLogin(true);
     setMostrarRemoteForm(false);
-    setMostrarTelaInicial(false);
+    setExibirTelaInicial(false);
   };
 
   const handleMostrarRemoteForm = () => {
     setExibirVerificarConexao(false);
     setMostrarLogin(false);
     setMostrarRemoteForm(true);
-    setMostrarTelaInicial(false);
+    setExibirTelaInicial(false);
   };
 
   const handleLogout = () => {
     setMostrarRemoteForm(false);
-    setMostrarTelaInicial(true);
+    setExibirTelaInicial(true);
     setLogado(false);
     onLogout();
   };
 
-  const handleConexaoEstabelecida= async ()=>{
-    try {
-      const response = await axios.get(`${ipLocal}/network`);
-      if (response.status === 200) {
-        setConectado(true);
-        console.log(`com internet`)
-        if (setConectado){
-          console.log("set conectado resolvido")
-        }else{
-          console.log("nao resolvido")
-        }
-      }
-    } catch (error) {
-      console.error('Sem internet:', error);
-    }
-  };
+ 
 
   const onLogout = () =>{
     const data = {
@@ -105,7 +90,7 @@ const TelaInicial = ({ onConexaoEstabelecida, }) => {
   .then((response) => {
     const { success, message } = response.data;
     if (success) {
-      setMostrarTelaInicial(true);
+      setExibirTelaInicial(true);
       setMostrarLogin(false); // Defina para não exibir o Login após o login bem-sucedido
     } else {
       console.log("erro")
@@ -115,6 +100,36 @@ const TelaInicial = ({ onConexaoEstabelecida, }) => {
 
 // Verificar conexao com a internet
 
+useEffect(() => {
+  const verificarConexao = async () => {
+    try {
+      const response = await axios.get(`${ipLocal}/network`);
+      //console.log(response);
+
+      if (response.data && (response.data.success || response.data.error)) {
+        //console.log(response.data.success || response.data.error);
+
+        // Aqui você pode usar a propriedade que indica sucesso ou erro
+        if (response.data.success) {
+          setConectado(true);
+          onConexaoEstabelecida();
+        } else {
+          // Continua verificando a cada 2 segundos se a conexão foi estabelecida
+          setTimeout(verificarConexao, 2000);
+        }
+      } else {
+        // Resposta inesperada, continua verificando
+        setTimeout(verificarConexao, 2000);
+      }
+    } catch (error) {
+      // Continua verificando a cada 2 segundos se a conexão foi estabelecida
+      setTimeout(verificarConexao, 2000);
+    }
+  };
+
+  verificarConexao();
+}, [onConexaoEstabelecida]);
+console.log(onConexaoEstabelecida)
 
 
 
@@ -125,32 +140,47 @@ const TelaInicial = ({ onConexaoEstabelecida, }) => {
 
 
   return (
-    <div>
+  <div className='main'>
+
+
+    <div className='wrap-division'>
+      
+      <div className='division'>
+        espaço
+      </div>
+
+      <div className='division'>
+      <div className='header'>
+        <img src='logo-nb.png'></img>
+        <h2>Bem vindo(a)<br></br> ao Nublify Smart Device </h2>
+      </div>
     <div className="grade">
     <div className="body-app">
 
-      <div className={exibirTelaInicial ? 'exibir' : 'ocultar'}>
-        <div className="title">
-        <h2>Bem vindo(a)<br></br> ao Nublify Smart Device 
-          <sup>
-            <a data-tooltip-id="dica" data-tooltip-content="Conecte-se à internet e siga os passos abaixo">
-              <FontAwesomeIcon icon={faCircleInfo} className='tips'/>  </a>
-            </sup>
-            
-          
-          </h2>
-          <ReactTooltip id="dica" />
-        </div>
+    <div className={mostrarTelaInicial ? 'exibir' : 'ocultar'}>
 
+        {onConexaoEstabelecida?(
+          logado?(
+            <RemoteForm/>
+          ):(
+            <Login />
+          )
+        ):(
+          <VerificarConexao/>
+        )
+      }
 
       </div>
+
+
+
 
       {exibirVerificarConexao && <VerificarConexao onConexaoEstabelecida={onConexaoEstabelecida} />}
 
       {mostrarLogin && (
         <Login
-          onLoginSuccess={() => {
-            setMostrarTelaInicial(false);
+          logado={() => {
+            setExibirTelaInicial(false);
             setMostrarLogin(false);
             setMostrarRemoteForm(true);
             setLogado(true);
@@ -161,21 +191,31 @@ const TelaInicial = ({ onConexaoEstabelecida, }) => {
       {mostrarRemoteForm && <RemoteForm />}
       </div>
       </div>
-      <div className="controls">
-      <button onClick={handleTelaInicial} className="btn-voltar">Voltar</button>
-      <button onClick={handleConexaoEstabelecida}>Internet?</button>
-      <button onClick={handleExibirVerificarConexao} className='btn-conectado'>Verificar Conexão</button>
-        <button onClick={handleMostrarRemoteForm} className='configurar'>Remote Form</button>
+      </div>
+<div className='division-control'>
+<div className="controls">
+      <button onClick={handleTelaInicial} className="btn-voltar"><FontAwesomeIcon icon={faArrowLeft}/></button>
+      {onConexaoEstabelecida ? (
+      <button onClick={handleExibirVerificarConexao} className='btn-conectado btn-control'><FontAwesomeIcon icon={faWifi} /></button>
+      ):
+      (<button onClick={handleExibirVerificarConexao} className='btn-desconectado btn-control'><FontAwesomeIcon icon={faPlugCircleXmark} /></button>)
+         
+    }
+
+
+        <button onClick={handleMostrarRemoteForm} className='configurar btn-control'><FontAwesomeIcon icon={faGear}/></button>
         {logado ? (
-          <button onClick={handleLogout} className='logoff'>Logoff</button>
+          <button onClick={handleLogout} className='logoff btn-control' ><FontAwesomeIcon icon={faUserSlash}/></button>
         ) : (
-          <button onClick={handleMostrarLogin} className='login'>Login</button>
+          <button onClick={handleMostrarLogin} className='login btn-control'><FontAwesomeIcon icon={faUser}/></button>
         )}
         
       </div>
+</div>
     
     
     
+    </div>
     </div>
   );
 };

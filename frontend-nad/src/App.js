@@ -116,26 +116,18 @@ console.log(ipLocal)
 
   return (
  <div>
-<div className='main'>
-<div className='header'>
-        <img src='logo-nb.png'></img>
-        <h1>Nublify Smart Device</h1>
-      </div>
-<div >
+
+
 
   
 
     <TelaInicial/>
 
 
-    </div>
-</div>
-<div className='sidebar'>
 
 </div>
 
 
- </div>
   );
 };
 

@@ -17,11 +17,21 @@ const ConexaoCabo = ({ onConexaoEstabelecida }) => {
     const verificarConexao = async () => {
       try {
         const response = await axios.get(`${ipLocal}/network`);
-        if (response.status === 200) {
-          setConectado(true);
-          onConexaoEstabelecida();
+        console.log(response);
+  
+        if (response.data && (response.data.success || response.data.error)) {
+          console.log(response.data.success || response.data.error);
+  
+          // Aqui você pode usar a propriedade que indica sucesso ou erro
+          if (response.data.success) {
+            setConectado(true);
+            onConexaoEstabelecida();
+          } else {
+            // Continua verificando a cada 2 segundos se a conexão foi estabelecida
+            setTimeout(verificarConexao, 2000);
+          }
         } else {
-          // Continua verificando a cada 2 segundos se a conexão foi estabelecida
+          // Resposta inesperada, continua verificando
           setTimeout(verificarConexao, 2000);
         }
       } catch (error) {
@@ -29,9 +39,10 @@ const ConexaoCabo = ({ onConexaoEstabelecida }) => {
         setTimeout(verificarConexao, 2000);
       }
     };
-
+  
     verificarConexao();
   }, [onConexaoEstabelecida]);
+  
 
   return (
     <div className="Instrucoes">

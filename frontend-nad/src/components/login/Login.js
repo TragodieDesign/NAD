@@ -38,7 +38,7 @@ const Login = ({ onLoginSuccess, onLoginError }) => {
         const { success, message } = response.data;
         if (success) {
           setLoginError(null);
-          onLoginSuccess();
+          
           setExibirRemoteForm(true);
           setExibirLogin(false); // Defina para não exibir o Login após o login bem-sucedido
         } else {
@@ -57,6 +57,9 @@ const Login = ({ onLoginSuccess, onLoginError }) => {
         console.error(errorMessage, error);
       });
   };
+
+
+
 
   return (
     <div >
