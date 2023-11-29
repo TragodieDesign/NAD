@@ -13,6 +13,7 @@ const RemoteForm = () => {
     host: '',
     remoteUser: '',
     remotePassword: '',
+    connected: true,
   });
 
   const [selectedConnection, setSelectedConnection] = useState(null);

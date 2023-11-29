@@ -827,12 +827,7 @@ Dicas
 .git img{
   width: 30px
 }
-.voltar{
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-}
+
 
 .arrow{
   margin: 10px;
@@ -879,4 +874,42 @@ Dicas
   box-shadow: 0 0 20px #eee;
   border-radius: 10px;
   display: block;
+}
+
+
+
+
+div.controls {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 300px;
+  border: 3px solid #73AD21;
+}
+
+.voltar{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  
+}
+
+.btn-voltar{
+  background-image: linear-gradient(to right, #e52d27 0%, #b31217  51%, #e52d27  100%);
+  margin: 10px;
+  padding: 15px 25px;
+  text-align: center;
+  text-transform: uppercase;
+  transition: 0.5s;
+  background-size: 200% auto;
+  color: white;            
+  box-shadow: 0 0 20px #eee;
+  border-radius: 10px;
+  display: block;
+}
+.btn-voltar:hover {
+  background-position: right center; /* change the direction of the change here */
+  color: #fff;
+  text-decoration: none;
 }

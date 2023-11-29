@@ -4,6 +4,9 @@ import axios from 'axios';
 import VerificarConexao from '../conexao/VerificarConexao';
 import Login from '../login/Login';
 import RemoteForm from '../remote/RemoteForm';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEthernet, faWifi,faCircleInfo } from '@fortawesome/free-solid-svg-icons';
+import { Tooltip as ReactTooltip } from 'react-tooltip'
 
 
 const ipLocal = (process.env.REACT_APP_IP_BACK)
@@ -11,7 +14,8 @@ const ipLocal = (process.env.REACT_APP_IP_BACK)
 
 
 
-const TelaInicial = ({ onConexaoVerificada, onLogout }) => {
+const TelaInicial = ({ onConexaoEstabelecida, }) => {
+  const [conectado, setConectado] = useState(false);
   const [exibirVerificarConexao, setExibirVerificarConexao] = useState(false);
   const [mostrarLogin, setMostrarLogin] = useState(false);
   const [mostrarRemoteForm, setMostrarRemoteForm] = useState(false);
@@ -75,30 +79,73 @@ const TelaInicial = ({ onConexaoVerificada, onLogout }) => {
     onLogout();
   };
 
+  const handleConexaoEstabelecida= async ()=>{
+    try {
+      const response = await axios.get(`${ipLocal}/network`);
+      if (response.status === 200) {
+        setConectado(true);
+        console.log(`com internet`)
+        if (setConectado){
+          console.log("set conectado resolvido")
+        }else{
+          console.log("nao resolvido")
+        }
+      }
+    } catch (error) {
+      console.error('Sem internet:', error);
+    }
+  };
+
+  const onLogout = () =>{
+    const data = {
+      action: 'logoff',
+  }
+  axios
+  .post(`${ipLocal}/auth/logoff`, data)
+  .then((response) => {
+    const { success, message } = response.data;
+    if (success) {
+      setMostrarTelaInicial(true);
+      setMostrarLogin(false); // Defina para não exibir o Login após o login bem-sucedido
+    } else {
+      console.log("erro")
+      }
+    })
+};
+
+// Verificar conexao com a internet
+
+
+
+
+
+
+
+
+
+
   return (
     <div>
-      <div className="controle">
-        <button onClick={handleTelaInicial}>Voltar</button>
-      </div>
+    <div className="grade">
+    <div className="body-app">
+
       <div className={exibirTelaInicial ? 'exibir' : 'ocultar'}>
         <div className="title">
-          {logado ? (
-            <h1>Bem-vindo(a), {username}</h1>
-          ) : (
-            <h1>Seja Bem-vindo(a)!</h1>
-          )}
+        <h2>Bem vindo(a)<br></br> ao Nublify Smart Device 
+          <sup>
+            <a data-tooltip-id="dica" data-tooltip-content="Conecte-se à internet e siga os passos abaixo">
+              <FontAwesomeIcon icon={faCircleInfo} className='tips'/>  </a>
+            </sup>
+            
+          
+          </h2>
+          <ReactTooltip id="dica" />
         </div>
 
-        <button onClick={handleExibirVerificarConexao} className='btn-conectado'>Verificar Conexão</button>
-        <button onClick={handleMostrarRemoteForm} className='configurar'>Remote Form</button>
-        {logado ? (
-          <button onClick={handleLogout} className='logoff'>Logoff</button>
-        ) : (
-          <button onClick={handleMostrarLogin} className='login'>Login</button>
-        )}
+
       </div>
 
-      {exibirVerificarConexao && <VerificarConexao onConexaoVerificada={onConexaoVerificada} />}
+      {exibirVerificarConexao && <VerificarConexao onConexaoEstabelecida={onConexaoEstabelecida} />}
 
       {mostrarLogin && (
         <Login
@@ -112,6 +159,23 @@ const TelaInicial = ({ onConexaoVerificada, onLogout }) => {
       )}
 
       {mostrarRemoteForm && <RemoteForm />}
+      </div>
+      </div>
+      <div className="controls">
+      <button onClick={handleTelaInicial} className="btn-voltar">Voltar</button>
+      <button onClick={handleConexaoEstabelecida}>Internet?</button>
+      <button onClick={handleExibirVerificarConexao} className='btn-conectado'>Verificar Conexão</button>
+        <button onClick={handleMostrarRemoteForm} className='configurar'>Remote Form</button>
+        {logado ? (
+          <button onClick={handleLogout} className='logoff'>Logoff</button>
+        ) : (
+          <button onClick={handleMostrarLogin} className='login'>Login</button>
+        )}
+        
+      </div>
+    
+    
+    
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ConexaoCabo from './ConexaoCabo';
 import ConexaoWifi from './ConexaoWifi';
 import Login from '../login/Login';
@@ -17,11 +17,16 @@ import axios from 'axios';
 const ipLocal = (process.env.REACT_APP_IP_BACK)
 
 const VerificarConexao = ({ onConexaoEstabelecida }) => {
+  const [conectado, setConectado] = useState(false);
   const [exibirConexaoCabo, setExibirConexaoCabo] = useState(false);
   const [exibirConexaoWifi, setExibirConexaoWifi] = useState(false);
   const [exibirBotaoConectado, setExibirBotaoConectado] = useState(false);
   const [exibirLogin, setExibirLogin] = useState(false);
   const [exibirVerificarConexao, setExibirVerificarConexao] = useState(true);
+
+
+
+
 
   const handleConexaoCabo = () => {
     setExibirConexaoCabo(true);
@@ -38,15 +43,41 @@ const VerificarConexao = ({ onConexaoEstabelecida }) => {
       
       const response = await axios.get(`${ipLocal}/network`);
       if (response.status === 200) {
+        console.log("com internet")
         setExibirLogin(true);
         setExibirVerificarConexao(false);
         setExibirConexaoCabo(false);
         setExibirConexaoWifi(false);
+
       }
     } catch (error) {
       console.error('Erro ao verificar conexão:', error);
     }
   };
+
+  useEffect(() => {
+    const verificarConexao = async () => {
+      try {
+        const response = await axios.get(`${ipLocal}/network`);
+        if (response.status === 200) {
+          setConectado(true);
+          onConexaoEstabelecida();
+        } else {
+          // Continua verificando a cada 2 segundos se a conexão foi estabelecida
+          setTimeout(verificarConexao, 2000);
+        }
+      } catch (error) {
+        // Continua verificando a cada 2 segundos se a conexão foi estabelecida
+        setTimeout(verificarConexao, 2000);
+      }
+    };
+
+    verificarConexao();
+  }, [onConexaoEstabelecida]);
+
+
+
+
 
   const handleBotaoConectado = () => {
     setExibirLogin(true);

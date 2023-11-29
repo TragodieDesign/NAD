@@ -121,35 +121,13 @@ console.log(ipLocal)
         <img src='logo-nb.png'></img>
         <h1>Nublify Smart Device</h1>
       </div>
-<div className="grade">
+<div >
 
-    <div className="body-app">
+  
 
-      {handleExibirVerificarConexao  && (
-        <VerificarConexao
-         
-          exibirVerificarConexao={exibirVerificarConexao}
-          logado={logado} // Passa a prop logado para o componente TelaInicial
-        />
-      )}
-
-      {mostrarLogin && (
-        <Login
-          onLoginSuccess={() => {
-            setMostrarTelaInicial(false);
-            setMostrarLogin(false);
-            setMostrarRemoteForm(true);
-            setLogado(true);
-          }}
-        />
-      )}
-
-      {mostrarRemoteForm && <RemoteForm />}
-
-      {exibirMensagem && <p>{mensagem}</p>}
+    <TelaInicial/>
 
 
-    </div>
     </div>
 </div>
 <div className='sidebar'>
