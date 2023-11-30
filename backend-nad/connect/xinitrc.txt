@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+xset -dpms && xset s off && xset s noblank && (Todos os arquivos vão conter esses comandos, o que muda é:)
+
+ - Para conexões por RDP (Remote Desktop) a linha será:
+
+xfreerdp /v:<IP DO SERVIDOR> /u:<USUÁRIO> /p:<SENHA> /cert-ignore /sound /microphone ;
+EXEMPLO:
+xfreerdp /v:192.168.0.117 /u:nublify /p:123ABC** /cert-ignore /sound /microphone ;
+
+ - Para conexões por RDP COM GATEWAY RDP a linha será:
+
+xfreerdp /v:<ENDEREÇO DO RDP GATEWAY> /g:<ENDEREÇO DO SERVIDOR RDP> /gu:<USUÁRIO DO RDP GATEWAY> /gp:<SENHA DO RDP GATEWAY> /u:<USUÁRIO DO SERVIDOR RDP> /p:<SENHA DO S>
+EXEMPLO:
+xfreerdp /v:cw3fbu001.ciaed01.ad /g:cw3-us-east1.cloudvdi.net /gu:diogenes /gp:123ABC** /u:diogenes /p:123ABC** /cert-ignore /sound /microphone ;
+
+ - Para conexões web (HTTP e HTTPS) a linha será:
+
+unclutter & exec /usr/bin/chromium -kiosk -url <ENDREÇO DE CONEXÃO>
+EXEMPLOS:
+unclutter & exec /usr/bin/chromium -kiosk -url https://nad.nublify.com:3000/
+unclutter & exec /usr/bin/chromium -kiosk -url https://nad.nublify.com:3000/guacamole
+unclutter & exec /usr/bin/chromium -kiosk -url https://nad.nublify.com/server
+
+ - Para conexões por VNC (Vou te mandar mais tarde)
+ - Para conexões por SSH (Vou te mandar mais tarde)

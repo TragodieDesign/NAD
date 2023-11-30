@@ -1,6 +1,7 @@
 cd ..
 # Obtém o endereço IP da máquina
-ip_local=$(hostname -I| awk '{print $1}')
+#ip_local=$(hostname -I| awk '{print $1}')
+ip_local="localhost"
 
 
 

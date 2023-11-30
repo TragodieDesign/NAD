@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+
+#conexao RDP sem gateway
+xset -dpms && xset s off && xset s noblank && xfreerdp /v:<IP DO SERVIDOR> /u:<USUÁRIO> /p:<SENHA> /cert-ignore /sound /microphone ;
+
+
+#conexao RDP com gateway
+
+xset -dpms && xset s off && xset s noblank &&  xfreerdp /v:<ENDEREÇO DO RDP GATEWAY> /g:<ENDEREÇO DO SERVIDOR RDP> /gu:<USUÁRIO DO RDP GATEWAY> /gp:<SENHA DO RDP GATEWAY> /u:<USUÁRIO DO SERVIDOR RDP> /p:<SENHA DO S>
+
+
+
+
+#Conexao WEB
+xset -dpms && xset s off && xset s noblank && unclutter & exec /usr/bin/chromium -kiosk -url <ENDERECO WEB>
+
+

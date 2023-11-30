@@ -18,6 +18,26 @@ function verificaCampos(jsonData) {
 
   return camposObrigatorios.every(campo => campo in jsonData);
 }
+// Função para criar o conteúdo do arquivo .xinitrc com base no connectionType e gateway
+function criarConteudoXinitrc(jsonData) {
+  if (jsonData.connectionType === 'WEB') {
+    return `#!/usr/bin/env bash
+#Conexao WEB
+xset -dpms && xset s off && xset s noblank && unclutter & exec /usr/bin/chromium -kiosk -url ${jsonData.host}`;
+  } else if (jsonData.connectionType === 'RDP' && !jsonData.gateway) {
+    return `#!/usr/bin/env bash
+#conexao RDP sem gateway
+xset -dpms && xset s off && xset s noblank && xfreerdp /v:${jsonData.host} /u:${jsonData.remoteUser} /p:${jsonData.remotePassword} /cert-ignore /sound /microphone`;
+  } else if (jsonData.connectionType === 'RDP' && jsonData.gateway) {
+    return `#!/usr/bin/env bash
+#conexao RDP com gateway
+xset -dpms && xset s off && xset s noblank && xfreerdp /v:${jsonData.hostGateway} /g:${jsonData.host} /gu:${jsonData.loginGateway} /gp:${jsonData.passwordGateway} /u:${jsonData.remoteUser} /p:${jsonData.remotePassword}`;
+  } else {
+    
+    return 'error'; 
+  }
+}
+
 
 // Rota para exportar JSON e verificar campos
 router.get('/get-json', async (req, res) => {
@@ -58,9 +78,22 @@ router.post('/', async (req, res) => {
 
       await fs.writeFile(jsonFilePath, JSON.stringify(jsonData, null, 2));
 
+      
+      const xinitrcContent = criarConteudoXinitrc(jsonData);
+      if (xinitrcContent) {
+        const xinitrcFilePath = __dirname + '/connect/.xinitrc';
+        await fs.writeFile(xinitrcFilePath, xinitrcContent);
+        console.log('Arquivo .xinitrc criado com sucesso.');
+      }
+      
+      
+      
+      
       res.send('Dados adicionados com sucesso!');
+      
 
       // Executar o comando sudo reboot now
+      /*
       const senhaSudo = jsonData.password; // Usando o campo 'password' do JSON
       if (senhaSudo) {
         exec(`echo ${senhaSudo} | sudo -S reboot now`, (err, stdout, stderr) => {
@@ -73,6 +106,11 @@ router.post('/', async (req, res) => {
       } else {
         console.error('Senha sudo não encontrada no JSON.');
       }
+
+
+      */
+
+
     } else {
       res.status(401).send('Não autenticado.');
     }

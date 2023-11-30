@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCode, faHouseLaptop, faLaptopCode, faGlobe, faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import { Tooltip as ReactTooltip } from 'react-tooltip'
@@ -7,8 +7,7 @@ import FormVNC from './FormVNC';
 import FormRDP from './FormRDP';
 import FormWEB from './FormWEB';
 
-
-const ipLocal = (process.env.REACT_APP_IP_BACK)
+const ipLocal = process.env.REACT_APP_IP_BACK;
 
 const RemoteForm = () => {
   const [formData, setFormData] = useState({
@@ -16,7 +15,10 @@ const RemoteForm = () => {
     host: '',
     remoteUser: '',
     remotePassword: '',
-    connected: true,
+    useGateway: false,
+    hostGateway: '',
+    loginGateway: '',
+    passwordGateway: '',
   });
 
   const [selectedConnection, setSelectedConnection] = useState(null);
@@ -27,10 +29,23 @@ const RemoteForm = () => {
       connectionType: value,
     });
     setSelectedConnection(value);
+    console.log(value);
+  };
+
+  const handleChange = (e) => {
+    e.persist();
+    const { name, value, type, checked } = e.target;
+
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    console.log('Form Data:', formData);
 
     try {
       const response = await fetch(`${ipLocal}/make-json`, {
@@ -52,6 +67,10 @@ const RemoteForm = () => {
     }
   };
 
+  useEffect(() => {
+    console.log(formData);
+  }, [formData]);
+
   return (
     <form onSubmit={handleSubmit}>
       <div className='connection-type'>
@@ -70,6 +89,58 @@ const RemoteForm = () => {
 <ReactTooltip id="dica" />
         </div>
         <div className='radio-icons-wrapper'>
+        
+          <div
+            className={`conection-option ${selectedConnection === 'RDP' ? 'selected-rdp' : ''}`}
+            onClick={() => handleOptionClick('RDP')}
+          >
+            <div className='connect-icon'>
+              <FontAwesomeIcon icon={faLaptopCode} />
+            </div>
+            <p>RDP</p>
+          </div>
+          <div
+            className={`conection-option ${selectedConnection === 'WEB' ? 'selected-web' : ''}`}
+            onClick={() => handleOptionClick('WEB')}
+          >
+            <div className='connect-icon'>
+              <FontAwesomeIcon icon={faGlobe} />
+            </div>
+            <p>WEB</p>
+          </div>
+        </div>
+      </div>
+      <br />
+      <div className='inputs-wrapper'>
+
+
+
+      {selectedConnection === 'RDP' && <FormRDP handleChange={handleChange} formData={formData} />}
+      {selectedConnection === 'WEB' && <FormWEB handleChange={handleChange} formData={formData} />}
+
+      </div>
+      <div className='button-wrapper'>
+        <button type="submit" className='remote-btn'>
+          Conectar
+        </button>
+      </div>
+    </form>
+  );
+};
+
+export default RemoteForm;
+
+
+
+
+/*
+Opções removidas
+
+
+
+      {selectedConnection === 'SSH' && <FormSSH />}
+      {selectedConnection === 'VNC' && <FormVNC />}
+
           <div
             className={`conection-option ${selectedConnection === 'SSH' ? 'selected-ssh' : ''}`}
             onClick={() => handleOptionClick('SSH')}
@@ -88,41 +159,7 @@ const RemoteForm = () => {
             </div>
             <p>VNC</p>
           </div>
-          <div
-            className={`conection-option ${selectedConnection === 'RDP' ? 'selected-rdp' : ''}`}
-            onClick={() => handleOptionClick('RDP')}
-          >
-            <div className='connect-icon'>
-              <FontAwesomeIcon icon={faLaptopCode} />
-            </div>
-            <p>RDP</p>
-          </div>
-          <div
-            className={`conection-option ${selectedConnection === 'Web' ? 'selected-web' : ''}`}
-            onClick={() => handleOptionClick('Web')}
-          >
-            <div className='connect-icon'>
-              <FontAwesomeIcon icon={faGlobe} />
-            </div>
-            <p>WEB</p>
-          </div>
-        </div>
-      </div>
-      <br />
-      <div className='inputs-wrapper'>
 
-      {selectedConnection === 'SSH' && <FormSSH />}
-      {selectedConnection === 'VNC' && <FormVNC />}
-      {selectedConnection === 'RDP' && <FormRDP />}
-      {selectedConnection === 'WEB' && <FormWEB />}
-      </div>
-      <div className='button-wrapper'>
-        <button type="submit" className='remote-btn'>
-          Conectar
-        </button>
-      </div>
-    </form>
-  );
-};
 
-export default RemoteForm;
+
+          */
