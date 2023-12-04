@@ -58,7 +58,7 @@ router.get('/', (req, res) => {
         success: 'Há uma conexão com a internet ativa.'
       };
       res.status(200).json(successMessage);
-      console.log('Conexão com a internet ativa');
+
     }
   });
 });

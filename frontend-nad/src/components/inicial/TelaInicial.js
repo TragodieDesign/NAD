@@ -40,6 +40,31 @@ const TelaInicial = () => {
     verificarLogin();
   }, []); // Apenas uma chamada à API quando o componente é montado
 
+
+//get mac address
+
+
+useEffect(() => {
+  const verificarLogin = async () => {
+    try {
+      const response = await axios.get(`${ipLocal}/auth/verificar-login`);
+      setLogado(response.data.logado);
+      if (response.data.logado) {
+        setUsername(response.data.username);
+      }
+    } catch (error) {
+      console.error('Erro ao verificar o login:', error);
+    }
+  };
+
+  verificarLogin();
+}, []);
+
+
+
+
+
+
   useEffect(() => {
     console.log(`Dados: ${username} ${logado}`);
   }, [username, logado]);
@@ -129,10 +154,14 @@ useEffect(() => {
 
   verificarConexao();
 }, [onConexaoEstabelecida]);
-console.log(onConexaoEstabelecida)
 
 
 
+const [supVisible, setSupVisible] = useState(false);
+
+const toggleSupVisibility = () => {
+  setSupVisible(!supVisible);
+};
 
 
 
@@ -146,7 +175,7 @@ console.log(onConexaoEstabelecida)
     <div className='wrap-division'>
       
       <div className='division'>
-        espaço
+        
       </div>
 
       <div className='division'>
@@ -209,6 +238,16 @@ console.log(onConexaoEstabelecida)
         ) : (
           <button onClick={handleMostrarLogin} className='login btn-control'><FontAwesomeIcon icon={faUser}/></button>
         )}
+                <sup className={supVisible ? 'sup-visible' : 'sup-hidden'}>
+
+</sup>
+<a data-tooltip-id="dica" data-tooltip-content="MAC ADDRESS: Versão:">
+<button className='configurar btn-control' onClick={toggleSupVisibility}>
+            <FontAwesomeIcon icon={faCircleInfo} className='macadress' />
+            </button>
+          </a>
+        <ReactTooltip id="dica" />
+      
         
       </div>
 </div>

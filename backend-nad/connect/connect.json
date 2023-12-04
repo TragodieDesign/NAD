@@ -1,15 +1,3 @@
 {
-  "username": "hamlet",
-  "password": "Xp#45aAzeW!",
-  "timestamp": "2023-11-30T02:57:23.143Z",
-  "logado": true,
-  "connectionType": "RDP",
-  "useGateway": true,
-  "host": "http://localhost:3003",
-  "hostGateway": "http://localhost:3003",
-  "loginGateway": "user",
-  "passwordGateway": "senha",
-  "remoteUser": "usuario remoto",
-  "remotePassword": "senha remota",
-  "gateway": true
+
 }

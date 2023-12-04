@@ -48,7 +48,7 @@ h2{
   align-items: center;
   justify-content: center;
 
-  width: 80%;
+  width: 100%;
 
 
 }
@@ -826,11 +826,13 @@ Dicas
   align-items: center;
   justify-content: center;
   flex-wrap: nowrap;
+  width: 100%;
   gap: 3em;
   padding: 30px;
 }
 .division{
   display: flex;
+  flex:1;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -841,6 +843,7 @@ Dicas
   
 }
 .division-control{
+  flex:1;
   display: flex;
   flex-direction: column;
   align-items: flex-start;

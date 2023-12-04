@@ -69,6 +69,7 @@ const authRouter = require('./auth');
 const networkRouter = require('./network');
 const makeJsonRouter = require('./make-json');
 const synthWifiRouter = require('./synth-wifi');
+const getMacAddress = require('./mac-address')
 
 //definir rotas
 
@@ -76,6 +77,7 @@ app.use('/auth', authRouter);
 app.use('/network', networkRouter);
 app.use('/make-json', makeJsonRouter);
 app.use('/synth-wifi', synthWifiRouter);
+app.use('/mac-address', getMacAddress )
 
 // Rota raiz que retorna "Servidor funcionando"
 app.get('/', (req, res) => {

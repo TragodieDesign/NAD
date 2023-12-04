@@ -61,10 +61,10 @@ const VerificarConexao = ({ onConexaoEstabelecida }) => {
     const verificarConexao = async () => {
       try {
         const response = await axios.get(`${ipLocal}/network`);
-        console.log(response);
+
   
         if (response.data && (response.data.success || response.data.error)) {
-          console.log(response.data.success || response.data.error);
+
   
           // Aqui você pode usar a propriedade que indica sucesso ou erro
           if (response.data.success) {

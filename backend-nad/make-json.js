@@ -2,6 +2,12 @@ const express = require('express');
 const router = express.Router();
 const fs = require('fs').promises;
 const { exec } = require('child_process');
+const dotenv = require('dotenv');
+dotenv.config();
+
+
+
+
 
 function verificaCampos(jsonData) {
   const camposObrigatorios = [
@@ -23,18 +29,26 @@ function criarConteudoXinitrc(jsonData) {
   if (jsonData.connectionType === 'WEB') {
     return `#!/usr/bin/env bash
 #Conexao WEB
-xset -dpms && xset s off && xset s noblank && unclutter & exec /usr/bin/chromium -kiosk -url ${jsonData.host}`;
+xset -dpms && xset s off && xset s noblank && unclutter & exec /usr/bin/chromium -kiosk -url ${jsonData.host}
+/w:${process.env.WIDTH} /h:${process.env.HEIGTH} 
+`;
   } else if (jsonData.connectionType === 'RDP' && !jsonData.gateway) {
     return `#!/usr/bin/env bash
 #conexao RDP sem gateway
-xset -dpms && xset s off && xset s noblank && xfreerdp /v:${jsonData.host} /u:${jsonData.remoteUser} /p:${jsonData.remotePassword} /cert-ignore /sound /microphone`;
+xset -dpms && xset s off && xset s noblank && xfreerdp /v:${jsonData.host} /u:${jsonData.remoteUser} /p:${jsonData.remotePassword} /cert-ignore /sound /microphone
+/w:${process.env.WIDTH} /h:${process.env.HEIGTH} 
+`;
   } else if (jsonData.connectionType === 'RDP' && jsonData.gateway) {
     return `#!/usr/bin/env bash
 #conexao RDP com gateway
-xset -dpms && xset s off && xset s noblank && xfreerdp /v:${jsonData.hostGateway} /g:${jsonData.host} /gu:${jsonData.loginGateway} /gp:${jsonData.passwordGateway} /u:${jsonData.remoteUser} /p:${jsonData.remotePassword}`;
+xset -dpms && xset s off && xset s noblank && xfreerdp /v:${jsonData.hostGateway} /g:${jsonData.host} /gu:${jsonData.loginGateway} /gp:${jsonData.passwordGateway} /u:${jsonData.remoteUser} /p:${jsonData.remotePassword}
+/w:${process.env.WIDTH} /h:${process.env.HEIGTH} 
+
+`;
+
   } else {
     
-    return 'error'; 
+    return 'erro na criação'; 
   }
 }
 
@@ -90,6 +104,7 @@ router.post('/', async (req, res) => {
       
       
       res.send('Dados adicionados com sucesso!');
+      console.log(jsonData)
       
 
       // Executar o comando sudo reboot now

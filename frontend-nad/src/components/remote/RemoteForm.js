@@ -72,7 +72,7 @@ const RemoteForm = () => {
   }, [formData]);
 
   return (
-    <form onSubmit={handleSubmit}>
+    <div>
       <div className='connection-type'>
         <div className='connection-title'>
           <h1>Escolha a sua conexão: 
@@ -119,12 +119,8 @@ const RemoteForm = () => {
       {selectedConnection === 'WEB' && <FormWEB handleChange={handleChange} formData={formData} />}
 
       </div>
-      <div className='button-wrapper'>
-        <button type="submit" className='remote-btn'>
-          Conectar
-        </button>
-      </div>
-    </form>
+
+    </div>
   );
 };
 
