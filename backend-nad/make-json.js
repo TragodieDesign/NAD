@@ -3,6 +3,7 @@ const router = express.Router();
 const fs = require('fs').promises;
 const { exec } = require('child_process');
 const dotenv = require('dotenv');
+const os = require('os');
 dotenv.config();
 
 
@@ -29,8 +30,8 @@ function criarConteudoXinitrc(jsonData) {
   if (jsonData.connectionType === 'WEB') {
     return `#!/usr/bin/env bash
 #Conexao WEB
-xset -dpms && xset s off && xset s noblank && unclutter & exec /usr/bin/chromium -kiosk -url ${jsonData.host}
-/w:${process.env.WIDTH} /h:${process.env.HEIGTH} 
+xset -dpms && xset s off && xset s noblank && unclutter & exec ${process.env.BROWSER} -url ${jsonData.host}
+
 `;
   } else if (jsonData.connectionType === 'RDP' && !jsonData.gateway) {
     return `#!/usr/bin/env bash
@@ -51,6 +52,12 @@ xset -dpms && xset s off && xset s noblank && xfreerdp /v:${jsonData.hostGateway
     return 'erro na criação'; 
   }
 }
+
+
+
+
+
+
 
 
 // Rota para exportar JSON e verificar campos
@@ -93,25 +100,37 @@ router.post('/', async (req, res) => {
       await fs.writeFile(jsonFilePath, JSON.stringify(jsonData, null, 2));
 
       
-      const xinitrcContent = criarConteudoXinitrc(jsonData);
-      if (xinitrcContent) {
-        const xinitrcFilePath = __dirname + '/connect/.xinitrc';
-        await fs.writeFile(xinitrcFilePath, xinitrcContent);
-        console.log('Arquivo .xinitrc criado com sucesso.');
-      }
-      
+const xinitrcContent = criarConteudoXinitrc(jsonData);
+    if (xinitrcContent) {
+      const xinitrcFilePath = __dirname + '/connect/.xinitrc';
+      await fs.writeFile(xinitrcFilePath, xinitrcContent);
+      console.log('Arquivo .xinitrc criado com sucesso.');
+
+      // Copiar o arquivo para o diretório home do usuário
+      const homeDirectory = os.homedir();
+      const userXinitrcPath = `${homeDirectory}/.xinitrc`;
+
+      await fs.copyFile(xinitrcFilePath, userXinitrcPath);
+      console.log('Arquivo .xinitrc copiado para o diretório home do usuário.');
+    }
+
       
       
       
       res.send('Dados adicionados com sucesso!');
       console.log(jsonData)
       
+    
+
+
+
+
 
       // Executar o comando sudo reboot now
       /*
       const senhaSudo = jsonData.password; // Usando o campo 'password' do JSON
       if (senhaSudo) {
-        exec(`echo ${senhaSudo} | sudo -S reboot now`, (err, stdout, stderr) => {
+        exec(`echo ${senhaSudo} | sudo pkill -KILL -u ${process.env.TARGET_USER}`, (err, stdout, stderr) => {
           if (err) {
             console.error('Erro ao reiniciar:', err);
           } else {

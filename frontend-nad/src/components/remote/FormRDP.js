@@ -54,12 +54,13 @@ const FormRDP = () => {
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} >
+      <div className="form-rdp">
       <div className='inputbox'>
         <input
           required
           className='input'
-          type="url"
+          type="text"
           name="host"
           value={formData.host}
           onChange={(e) => handleChange(e)}
@@ -70,7 +71,7 @@ const FormRDP = () => {
 
       <div className='inputbox'>
         <input
-          required
+          
           className='input'
           type="text"
           name="remoteUser"
@@ -83,7 +84,7 @@ const FormRDP = () => {
 
       <div className='inputbox'>
         <input
-          required
+          
           className='input'
           type="password"
           name="remotePassword"
@@ -146,11 +147,13 @@ const FormRDP = () => {
           </div>
         </div>
       )}
+            </div>
             <div className='button-wrapper'>
         <button type="submit" className='remote-btn'>
           Conectar
         </button>
       </div>
+
       </form>
     </div>
   );

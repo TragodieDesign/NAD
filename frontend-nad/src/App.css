@@ -561,6 +561,26 @@ width: 450px;
   scrollbar-width: none;
 }
 
+.form-rdp-none{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-height: 250px; 
+  overflow-y: auto;
+height: 200px;
+ border-radius: 30px;
+ background: #e8e8e800;
+ border-radius: 30px;
+ gap:10px;
+
+ box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 50px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 26px -18px inset;
+  padding: 5px;
+  scrollbar-width: none;
+}
+
+
 
 .wifi-card {
   box-sizing: border-box;
