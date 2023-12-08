@@ -2,11 +2,16 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import "./Wifi.styles.css";
 import WifiSignal from './Wifi-signal';
+//import { useIP } from '../IPContext';
 
 
-const ipLocal = (process.env.REACT_APP_IP_BACK)
 
 const ConexaoWifi = ({ onConexaoEstabelecida }) => {
+
+//const { ipLocal } = useIP();
+const ipLocal = (process.env.REACT_APP_IP_BACK)
+
+
   const [wifiList, setWifiList] = useState([]);
   const [selectedNetwork, setSelectedNetwork] = useState(null);
   const [password, setPassword] = useState('');
@@ -19,6 +24,7 @@ const ConexaoWifi = ({ onConexaoEstabelecida }) => {
     const carregarRedesWifi = async () => {
       try {
         const response = await axios.get(`${ipLocal}/network`);
+        console.log(` enviando requisição de ${ipLocal}`)
         console.log(response)
         const { wifiList } = response.data;
 
@@ -88,6 +94,14 @@ const ConexaoWifi = ({ onConexaoEstabelecida }) => {
     }
   };
 
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleTogglePassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+
+
   return (
     <div className='connect-wifi-wrapper'>
       {conectado ? (
@@ -123,19 +137,34 @@ const ConexaoWifi = ({ onConexaoEstabelecida }) => {
           {selectedNetwork && (
             <div>
               <div><p>Conectar à rede Wi-Fi: {selectedNetwork.ssid}</p></div>
+                <p>{mensagem}</p>
               <div className='connect-password-group'>
                 <div className='input-password-group'>
-                  <input
-                    className='input-password'
-                    type="password"
-                    placeholder="Digite a senha"
+                  <input className='input-password'
+                  type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
+
                 </div>
+                  <div>
+        <input
+          type="checkbox"
+          checked={showPassword}
+          onChange={handleTogglePassword}
+        />{' '}
+        Exibir Senha
+                  </div>
+
                 <button onClick={handleConectar} className='connect-wifi-btn'>Conectar</button>
                 {mensagem && exibirResponseWifi && <p>{mensagem}</p>}
               </div>
+                  {conectado ? null :
+      <div className="aguardando">
+        <div className='gif'><img src='./Spinner-1.1s-88px.svg'></img> </div>
+        <p>Aguardando conexão...</p>
+       </div>}
+
             </div>
           )}
         </div>

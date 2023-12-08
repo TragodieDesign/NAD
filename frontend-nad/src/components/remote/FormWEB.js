@@ -41,6 +41,7 @@ const FormWEB = () => {
 
       if (response.ok) {
         console.log('Dados do formulário enviados com sucesso!');
+ window.location.reload(true);
       } else {
         console.error('Erro ao enviar os dados do formulário.');
       }

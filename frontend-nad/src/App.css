@@ -64,9 +64,10 @@ h2{
   background-color: #ffffff73;
   backdrop-filter: blur(8px);
   border-radius: 30px;
-  width: 400px;
+  min-width: 450px;
   min-height:400px;
   height:auto;
+  width:auto;
   padding: 0;
   border: 1px solid #ffffff3d;
 }
@@ -400,6 +401,19 @@ button{
   color: #fff;
   text-decoration: none;
 }
+.configurar-off{
+  background-color: #555555;
+  margin: 10px;
+  padding: 15px 45px;
+  text-align: center;
+  text-transform: uppercase;
+  transition: 0.5s;
+  background-size: 200% auto;
+  color: white;
+  box-shadow: 0 0 20px #eee;
+  border-radius: 10px;
+  display: block;
+}
 
 
 
@@ -589,7 +603,7 @@ height: 200px;
 .wifi-card {
   box-sizing: border-box;
   padding: 10px;
-  width: 300px;
+  width: 350px;
   height: 100px;
   background: rgba(217, 217, 217, 0.58);
   border: 1px solid white;
@@ -618,7 +632,7 @@ height: 200px;
   transform: scale(0.95) rotateZ(1.7deg);
 }
 .ssid-wrapper{
-width: 100%;
+width: 50%;
 }
 .wifi-icon-wrapper{
   max-width: 50px;

@@ -7,21 +7,23 @@ const ipLocal = (process.env.REACT_APP_IP_BACK)
 
 
 
+
+
 const ConexaoCabo = ({ onConexaoEstabelecida }) => {
   const [conectado, setConectado] = useState(false);
   const handleReload = () => {
     window.location.reload();
   };
- 
+
   useEffect(() => {
     const verificarConexao = async () => {
       try {
         const response = await axios.get(`${ipLocal}/network`);
         console.log(response);
-  
+
         if (response.data && (response.data.success || response.data.error)) {
           console.log(response.data.success || response.data.error);
-  
+
           // Aqui você pode usar a propriedade que indica sucesso ou erro
           if (response.data.success) {
             setConectado(true);
@@ -39,10 +41,10 @@ const ConexaoCabo = ({ onConexaoEstabelecida }) => {
         setTimeout(verificarConexao, 2000);
       }
     };
-  
+
     verificarConexao();
   }, [onConexaoEstabelecida]);
-  
+
 
   return (
     <div className="Instrucoes">
@@ -64,7 +66,7 @@ const ConexaoCabo = ({ onConexaoEstabelecida }) => {
 
       </div>
       <div className='aguardando'>
-      {conectado ? null : 
+      {conectado ? null :
       <div className="aguardando">
         <div className='gif'><img src='./Spinner-1.1s-88px.svg'></img> </div>
         <p>Aguardando conexão...</p>

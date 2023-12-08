@@ -8,7 +8,7 @@ import { Tooltip as ReactTooltip } from 'react-tooltip'
 
 const ipLocal = (process.env.REACT_APP_IP_BACK)
 
-
+axios.defaults.withCredentials = true;
 
 const Login = ({ onLoginSuccess, onLoginError }) => {
   const [username, setUsername] = useState('');

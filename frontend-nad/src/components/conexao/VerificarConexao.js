@@ -6,6 +6,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEthernet, faWifi,faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import { Tooltip as ReactTooltip } from 'react-tooltip'
 import "./Wifi.styles.css";
+import axios from "axios";
+//import { useIP } from '../IPContext';
 
 
 
@@ -13,10 +15,14 @@ import "./Wifi.styles.css";
 
 
 
-import axios from 'axios';
+
 const ipLocal = (process.env.REACT_APP_IP_BACK)
 
 const VerificarConexao = ({ onConexaoEstabelecida }) => {
+
+//const { ipLocal } = useIP();
+
+
   const [conectado, setConectado] = useState(false);
   const [exibirConexaoCabo, setExibirConexaoCabo] = useState(false);
   const [exibirConexaoWifi, setExibirConexaoWifi] = useState(false);
@@ -40,7 +46,7 @@ const VerificarConexao = ({ onConexaoEstabelecida }) => {
 
   const handleConexaoFinalizada = async () => {
     try {
-      
+
       const response = await axios.get(`${ipLocal}/network`);
       if (response.status === 200) {
         console.log("com internet")
@@ -55,17 +61,17 @@ const VerificarConexao = ({ onConexaoEstabelecida }) => {
     }
   };
 
-  
+
 
   useEffect(() => {
     const verificarConexao = async () => {
       try {
         const response = await axios.get(`${ipLocal}/network`);
 
-  
+
         if (response.data && (response.data.success || response.data.error)) {
 
-  
+
           // Aqui você pode usar a propriedade que indica sucesso ou erro
           if (response.data.success) {
             setConectado(true);
@@ -83,11 +89,11 @@ const VerificarConexao = ({ onConexaoEstabelecida }) => {
         setTimeout(verificarConexao, 2000);
       }
     };
-  
+
     verificarConexao();
   }, [onConexaoEstabelecida]);
-  
-  
+
+
 
 
 
@@ -106,7 +112,7 @@ const VerificarConexao = ({ onConexaoEstabelecida }) => {
     <div className='connect-intro'>
       {exibirVerificarConexao && (
         <div className='connect-intro'>
-          
+
           <p>Para iniciar, selecione um método de conexão com a internet para iniciar a sua conexão remota:
 
           <sup>

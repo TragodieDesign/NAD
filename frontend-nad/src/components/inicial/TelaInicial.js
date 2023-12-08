@@ -15,12 +15,31 @@ import {
   faGear
 } from '@fortawesome/free-solid-svg-icons';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
-
+//import { useIP } from '../IPContext';
 const ipLocal = process.env.REACT_APP_IP_BACK;
 
 
 
 const TelaInicial = () => {
+//const { ipLocal } = useIP();
+// const [ipLocal, setIpLocal] = useState('');
+
+
+
+  const verificarLoginPeriodico = () => {
+    // Função para verificar o login e atualizar o estado logado
+    const verificarLogin = async () => {
+      try {
+        const response = await axios.get(`${ipLocal}/auth/verificar-login`);
+        setLogado(response.data.logado);
+      } catch (error) {
+        console.error('Erro ao verificar o login:', error);
+      }
+    };
+
+    verificarLogin();
+  };
+
   const [onConexaoEstabelecida, setConectado] = useState(false);
   const [exibirVerificarConexao, setExibirVerificarConexao] = useState(false);
   const [mostrarLogin, setMostrarLogin] = useState(false);
@@ -34,9 +53,12 @@ const TelaInicial = () => {
     const verificarLogin = async () => {
       try {
         const response = await axios.get(`${ipLocal}/auth/verificar-login`);
+        console.log(`Checagem do login ${logado}`)
         setLogado(response.data.logado);
         if (response.data.logado) {
           setUsername(response.data.username);
+        } else{
+          setTimeout(verificarLogin, 2000);
         }
       } catch (error) {
         console.error('Erro ao verificar o login:', error);
@@ -45,6 +67,11 @@ const TelaInicial = () => {
 
     verificarLogin();
   }, []);
+
+
+
+
+
 
   useEffect(() => {
     console.log(`Dados: ${username} ${logado}`);
@@ -113,7 +140,7 @@ useEffect(() => {
   const verificarConexao = async () => {
     try {
       const response = await axios.get(`${ipLocal}/network`);
-      //console.log(response);
+      console.log(`rota ${ipLocal}/network`);
 
       if (response.data && (response.data.success || response.data.error)) {
         //console.log(response.data.success || response.data.error);
@@ -143,7 +170,7 @@ useEffect(() => {
 useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`${ipLocal}make-json/get-json`, {
+        const response = await fetch(`${ipLocal}/make-json/get-json`, {
           method: 'GET',
           credentials: 'include', // para incluir os cookies na requisição
         });
@@ -172,12 +199,31 @@ useEffect(() => {
 const toggleSupVisibility = () => {
   setSupVisible(!supVisible);
 };
+  const [host, setHost] = useState('');
+  const [error,] = useState(null);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`${ipLocal}/synth-wifi.js`);
+        if (!response.ok) {
+          throw new Error('Erro ao obter o host');
+        }
 
+        const data = await response.json();
+        setHost(data.host);
+      } catch (error) {
+        console.error('Erro durante a requisição:', error);
 
+      }
+    };
+
+    fetchData();
+  }, []);
 
 
 
  return (
+
   <div className='main'>
 
 
@@ -195,6 +241,7 @@ const toggleSupVisibility = () => {
     <div className="grade">
     <div className="body-app">
 
+
     <div className={mostrarTelaInicial ? 'exibir' : 'ocultar'}>
 
         {onConexaoEstabelecida?(
@@ -204,7 +251,8 @@ const toggleSupVisibility = () => {
             <Login />
           )
         ):(
-          <VerificarConexao/>
+          <VerificarConexao ipLocal={ipLocal} />
+
         )
       }
 
@@ -241,18 +289,21 @@ const toggleSupVisibility = () => {
     }
 
 
-        <button onClick={handleMostrarRemoteForm} className='configurar btn-control'><FontAwesomeIcon icon={faGear}/></button>
+  {logado ?(
+    <button onClick={handleMostrarRemoteForm} className='configurar btn-control'><FontAwesomeIcon icon={faGear}/></button>
+  ):(
+<button  className='configurar-off btn-control'><FontAwesomeIcon icon={faGear}/></button>
+
+  )
+  }
+
+
         {logado ? (
           <button onClick={handleLogout} className='logoff btn-control' ><FontAwesomeIcon icon={faUserSlash}/></button>
         ) : (
           <button onClick={handleMostrarLogin} className='login btn-control'><FontAwesomeIcon icon={faUser}/></button>
         )}
 
-<a data-tooltip-id="dica" data-tooltip-content="MAC ADDRESS: Versão:">
-<button className='configurar btn-control'>
-            <FontAwesomeIcon icon={faCircleInfo} className='macadress' />
-            </button>
-          </a>
 
 
 

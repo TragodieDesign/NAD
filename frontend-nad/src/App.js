@@ -5,14 +5,16 @@ import Login from './components/login/Login';
 import RemoteForm from './components/remote/RemoteForm';
 import axios from 'axios';
 import VerificarConexao from './components/conexao/VerificarConexao';
-
-
-
-//require('dotenv').config()
-console.log(`Teste ${process.env.REACT_APP_IP_BACK}`)
+//import { IPProvider, useIP } from './components/IPContext';
+//import checkLocalhost from './components/configIP'
+//console.log(`Teste ${process.env.REACT_APP_IP_BACK}`)
 
 const ipLocal = (process.env.REACT_APP_IP_BACK)
-console.log(`O IP do backend é ${process.env.REACT_APP_IP_BACK}`)
+//console.log(`O IP do backend é ${process.env.REACT_APP_IP_BACK}`)
+
+
+
+
 
 /*
 axios.defaults.withCredentials = true;
@@ -38,7 +40,10 @@ const App = () => {
 
 
 
-console.log(ipLocal)
+
+
+
+
 
   const [mostrarTelaInicial, setMostrarTelaInicial] = useState(true);
   const [mostrarLogin, setMostrarLogin] = useState(false);
@@ -52,19 +57,7 @@ console.log(ipLocal)
   const [username, setUsername] = useState('');
 
 
-  const verificarLoginPeriodico = () => {
-    // Função para verificar o login e atualizar o estado logado
-    const verificarLogin = async () => {
-      try {
-        const response = await axios.get(`${ipLocal}/auth/verificar-login`);
-        setLogado(response.data.logado);
-      } catch (error) {
-        console.error('Erro ao verificar o login:', error);
-      }
-    };
 
-    verificarLogin();
-  };
 
 //useEffect(() => {
     // Verificar o login imediatamente ao montar o componente
@@ -115,15 +108,8 @@ console.log(ipLocal)
   };
 
   return (
- <div>
-
-
-
-
-
-    <TelaInicial/>
-
-
+       <div>
+    <TelaInicial />
 
 </div>
 

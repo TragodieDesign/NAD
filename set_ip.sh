@@ -1,16 +1,11 @@
 cd ..
 # descomente abaixo para o ip remoto ou na linha seguinte para localhost
 # Obtém o endereço IP usando o comando hostname -I
-ip_local=$(hostname -I | awk '{print $1}')
+#ip_local=$(hostname -I | awk '{print $1}')
 
-# Verifica se $ip_local não está vazio
-if [ "${#ip_local}" -gt 0 ]; then
-    # Se não estiver vazio, usa o valor obtido pelo comando
-    :
-else
-    # Se estiver vazio, define como "localhost"
+
     ip_local="localhost"
-fi
+
 # Escreve o endereço IP no arquivo .env no diretório do backend
 echo "IP_FRONT=http://$ip_local:3000
 IP_BACK=http://$ip_local:3003
