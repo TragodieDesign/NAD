@@ -5,6 +5,17 @@ const { exec } = require('child_process');
 const dotenv = require('dotenv');
 const os = require('os');
 dotenv.config();
+const cors = require('cors');
+
+const app = express();
+
+app.use(cors({
+ origin:true,
+  credentials:true
+}
+));
+
+
 
 
 
@@ -33,23 +44,22 @@ function criarConteudoXinitrc(jsonData) {
 xset -dpms && xset s off && xset s noblank && unclutter & exec ${process.env.BROWSER} -url ${jsonData.host}
 
 `;
-  } else if (jsonData.connectionType === 'RDP' && !jsonData.gateway) {
+  } else if (jsonData.connectionType === 'RDP' && !jsonData.useGateway) {
     return `#!/usr/bin/env bash
 #conexao RDP sem gateway
-xset -dpms && xset s off && xset s noblank && xfreerdp /v:${jsonData.host} /u:${jsonData.remoteUser} /p:${jsonData.remotePassword} /cert-ignore /sound /microphone
-/w:${process.env.WIDTH} /h:${process.env.HEIGTH} 
+xfreerdp /v:${jsonData.host} /u:${jsonData.remoteUser} /p:${jsonData.remotePassword} /cert-ignore /sound /microphone /w:${process.env.WIDTH} /h:${process.env.HEIGTH}
+
 `;
-  } else if (jsonData.connectionType === 'RDP' && jsonData.gateway) {
+  } else if (jsonData.connectionType === 'RDP' && jsonData.useGateway) {
     return `#!/usr/bin/env bash
 #conexao RDP com gateway
-xset -dpms && xset s off && xset s noblank && xfreerdp /v:${jsonData.hostGateway} /g:${jsonData.host} /gu:${jsonData.loginGateway} /gp:${jsonData.passwordGateway} /u:${jsonData.remoteUser} /p:${jsonData.remotePassword}
-/w:${process.env.WIDTH} /h:${process.env.HEIGTH} 
+xset -dpms && xset s off && xset s noblank && xfreerdp /v:${jsonData.hostGateway} /g:${jsonData.host} /gu:${jsonData.loginGateway} /gp:${jsonData.passwordGateway} /u:${jsonData.remoteUser} /p:${jsonData.remotePassword} /w:${process.env.WIDTH} /h:${process.env.HEIGTH}
 
 `;
 
   } else {
-    
-    return 'erro na criação'; 
+
+    return 'erro na criação';
   }
 }
 
@@ -69,24 +79,27 @@ router.get('/get-json', async (req, res) => {
 
       const parsedData = JSON.parse(jsonData);
 
-      if (verificaCampos(parsedData)) {
-        if (parsedData.logado && parsedData.connected) {
-          res.json({ mensagem: 'Todos os campos presentes. Logado e conectado.' });
-        } else {
-          res.json({ mensagem: 'Erro na configuração da conexão remota' });
-        }
+      if (parsedData.connected) {
+        res.json({ mensagem: 'Todos os campos presentes. Logado e conectado.' });
+                  exec(`sudo pkill -KILL -u ${process.env.TARGET_USER}`, (err, stdout, stderr) => {
+          if (err) {
+            console.error('Erro ao reiniciar:', err);
+          } else {
+            console.log('Reiniciado com sucesso:', stdout);
+          }
+        });
       } else {
-        res.status(400).json({ mensagem: 'Conexão remota não configurada' });
+        console.error('Senha sudo não encontrada no JSON.');
       }
-    } else {
-      res.status(401).send('Não autenticado.');
-    }
-  } catch (error) {
+
+      } else {
+        res.status(400).json({ mensagem: 'Erro na configuração da conexão remota ou conexão não estabelecida.' });
+      }
+    }  catch (error) {
     console.error('Erro ao processar o arquivo JSON:', error);
     res.status(500).send('Erro interno do servidor');
   }
 });
-
 // Rota para receber dados JSON via POST
 router.post('/', async (req, res) => {
   try {
@@ -99,7 +112,7 @@ router.post('/', async (req, res) => {
 
       await fs.writeFile(jsonFilePath, JSON.stringify(jsonData, null, 2));
 
-      
+
 const xinitrcContent = criarConteudoXinitrc(jsonData);
     if (xinitrcContent) {
       const xinitrcFilePath = __dirname + '/connect/.xinitrc';
@@ -107,30 +120,28 @@ const xinitrcContent = criarConteudoXinitrc(jsonData);
       console.log('Arquivo .xinitrc criado com sucesso.');
 
       // Copiar o arquivo para o diretório home do usuário
-      const homeDirectory = os.homedir();
+      const homeDirectory = `${process.env.HOME}` ;
       const userXinitrcPath = `${homeDirectory}/.xinitrc`;
 
       await fs.copyFile(xinitrcFilePath, userXinitrcPath);
-      console.log('Arquivo .xinitrc copiado para o diretório home do usuário.');
+      console.log(`Arquivo .xinitrc copiado para o diretorio ${homeDirectory}`);
     }
 
-      
-      
-      
+
+
+
       res.send('Dados adicionados com sucesso!');
       console.log(jsonData)
-      
-    
 
 
 
 
 
-      // Executar o comando sudo reboot now
-      /*
+
+
       const senhaSudo = jsonData.password; // Usando o campo 'password' do JSON
       if (senhaSudo) {
-        exec(`echo ${senhaSudo} | sudo pkill -KILL -u ${process.env.TARGET_USER}`, (err, stdout, stderr) => {
+        exec(`pkill -KILL -u ${process.env.TARGET_USER}`, (err, stdout, stderr) => {
           if (err) {
             console.error('Erro ao reiniciar:', err);
           } else {
@@ -142,7 +153,7 @@ const xinitrcContent = criarConteudoXinitrc(jsonData);
       }
 
 
-      */
+
 
 
     } else {

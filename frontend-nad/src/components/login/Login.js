@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import RemoteForm from '../remote/RemoteForm'; 
+import RemoteForm from '../remote/RemoteForm';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import { Tooltip as ReactTooltip } from 'react-tooltip'
@@ -38,7 +38,7 @@ const Login = ({ onLoginSuccess, onLoginError }) => {
         const { success, message } = response.data;
         if (success) {
           setLoginError(null);
-          
+          window.location.reload(true);
           setExibirRemoteForm(true);
           setExibirLogin(false); // Defina para não exibir o Login após o login bem-sucedido
         } else {
@@ -68,7 +68,7 @@ const Login = ({ onLoginSuccess, onLoginError }) => {
           <div className='login-title'>
           <div>
           <h1>Digite seu <br></br>login e senha:<sup>
-<a data-tooltip-id="dica" 
+<a data-tooltip-id="dica"
 data-tooltip-content="Insira as credencias do Nublify Smart Device recebidas com o dispositivo">
   <FontAwesomeIcon icon={faCircleInfo} className='tips'/>  </a>
 </sup>
@@ -76,9 +76,9 @@ data-tooltip-content="Insira as credencias do Nublify Smart Device recebidas com
 </h1>
 
             </div>
-            
-          
-          
+
+
+
           <ReactTooltip id="dica" />
           </div>
           <form className='login-inputs'>

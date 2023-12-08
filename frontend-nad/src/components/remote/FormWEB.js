@@ -1,17 +1,23 @@
 import React, { useState } from 'react';
 
-
-
 const ipLocal = process.env.REACT_APP_IP_BACK;
 
-
+const ConfirmationPopup = ({ onConfirm, onCancel }) => (
+  <div className="confirmation-popup">
+    <p>Tem certeza que deseja prosseguir?</p>
+    <button onClick={onConfirm} className="confirmation-btn-y">Sim</button>
+    <button onClick={onCancel}className="confirmation-btn-n">Não</button>
+  </div>
+);
 
 const FormWEB = () => {
-  
   const [formData, setFormData] = useState({
     connectionType: "WEB",
     host: '',
+    connected:true,
   });
+
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,11 +27,8 @@ const FormWEB = () => {
       [name]: value,
     }));
   };
-  const handleSubmit = async (e) => {
-    e.preventDefault();
 
-    console.log('Form Data:', formData);
-
+  const handleConfirm = async () => {
     try {
       const response = await fetch(`${ipLocal}/make-json`, {
         method: 'POST',
@@ -44,35 +47,50 @@ const FormWEB = () => {
     } catch (error) {
       console.error('Erro ao enviar a solicitação:', error);
     }
+
+    setShowConfirmation(false);
   };
 
+  const handleCancel = () => {
+    setShowConfirmation(false);
+    console.log('Operação cancelada pelo usuário.');
+  };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-
-
+    // Exibir a div de confirmação
+    setShowConfirmation(true);
+  };
 
   return (
-    <form onSubmit={handleSubmit}>
     <div>
-      <div className='inputbox'>
-        <input
-          required
-          className='input'
-          type="url"
-          name="host"
-          value={formData.host}
-          onChange={handleChange}
-          placeholder='Insira o IP ou host:'
-        />
-        <i></i>
-      </div>
-      <div className='button-wrapper'>
-        <button type="submit" className='remote-btn'>
-          Conectar
-        </button>
-      </div>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <div className='inputbox'>
+            <input
+              required
+              className='input'
+              type="url"
+              name="host"
+              value={formData.host}
+              onChange={handleChange}
+              placeholder='Insira o IP ou host:'
+            />
+            <i></i>
+          </div>
+          <div className='button-wrapper'>
+            <button type="submit" className='remote-btn'>
+              Conectar
+            </button>
+          </div>
+        </div>
+      </form>
+
+      {showConfirmation && (
+        <ConfirmationPopup onConfirm={handleConfirm} onCancel={handleCancel} />
+      )}
     </div>
-    </form>
   );
 };
 

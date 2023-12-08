@@ -89,37 +89,61 @@ router.get('/verificar-login', async (req, res) => {
   }
 });
 
-router.post('/logoff', async (req,res)=>{
-  const {action } = req.body;
-  if (action === 'logoff') {
-    res.clearCookie('autenticado');
-    const logoffSuccess = {
-      message: 'Usuário deslogado com sucesso',
-      success: 'logoff',
+router.post('/logoff', async (req, res) => {
+  try {
+    const { action } = req.body;
+
+    if (action === 'logoff') {
+      res.clearCookie('autenticado');
+      const logoffSuccess = {
+        message: 'Usuário deslogado com sucesso',
+        success: 'logoff',
+      };
+
+      const jsonFilePath = __dirname + '/connect/connect.json';
+      const jsonData = JSON.parse(await fs.readFile(jsonFilePath, 'utf-8'));
+
+
+
+      const senhaSudo = jsonData.password;
+
+       exec(`echo ${senhaSudo} | sudo reboot`)
+      console.log('Usuário deslogado com sucesso');
+
+      // Criar o diretório se não existir
+      await fs.mkdir(jsonDirPath, { recursive: true });
+
+      // Salvar as credenciais no arquivo connect.json
+      const connectData = {
+        timestamp: new Date().toISOString(),
+        username:'null',
+        password:'null',
+        logado: false,
+      };
+      await fs.writeFile(jsonFilePath, JSON.stringify(connectData, null, 2));
+
+      res.status(200).json(logoffSuccess);
+
+    } else {
+      const errorLogoff = {
+        message: 'Ação desconhecida',
+        error: 'Ação desconhecida',
+      };
+
+      console.log("Erro ao desconectar", errorLogoff);
+
+      res.status(500).json(errorLogoff);
     }
- 
-    res.status(200).json(logoffSuccess);
-    console.log('Usuário deslogado com sucesso');
-    const connectData = {
-      timestamp: new Date().toISOString(),
-      logado: false
-    };
-    await fs.writeFile(jsonFilePath, JSON.stringify(connectData, null, 2));
-  } else {
+  } catch (error) {
     const errorLogoff = {
       message: 'Erro ao executar o script',
-      error: error.message
-  }}
-  res.status(500).json(errorLogoff);
-  console.log("Erro ao desconectar", error)
-})
+      error: error.message,
+    };
 
+    console.log("Erro ao desconectar", errorLogoff);
 
-
-
-
-
-
-
+    res.status(500).json(errorLogoff);
+  }
+});
 
 module.exports = router;

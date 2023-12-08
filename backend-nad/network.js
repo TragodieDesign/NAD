@@ -2,6 +2,20 @@ const wifi = require('node-wifi');
 const express = require('express');
 const { exec } = require('child_process');
 const router = express.Router();
+const cors = require('cors');
+const dotenv = require('dotenv'); // para pegar o hostname
+
+const app = express();
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'POST');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  next();
+});
+
+
+
 
 // Função para verificar a conexão com a internet
 const checkInternetConnection = (callback) => {
@@ -15,7 +29,7 @@ const checkInternetConnection = (callback) => {
 };
 
 // Rota para verificar a conexão com a internet e listar redes Wi-Fi
-router.get('/', (req, res) => {
+router.get('/',  (req, res) => {
   checkInternetConnection((isOnline) => {
     if (!isOnline) {
       wifi.init({
@@ -53,11 +67,46 @@ router.get('/', (req, res) => {
         }
       });
     } else {
+
+          wifi.init({
+      //  iface: null
+      });
+      wifi.scan((error, networks) => {
+        if (error) {
+          console.log(error);
+          const errorResponse = {
+            message: 'Erro ao escanear redes Wi-Fi',
+            error: 'Ocorreu um erro ao escanear as redes Wi-Fi disponíveis.'
+          };
+          res.status(500).json(errorResponse);
+        } else {
+          const wifiList = networks.map(network => ({
+            ssid: network.ssid,
+            bssid: network.bssid,
+            channel: network.channel,
+            frequency: network.frequency,
+            signal_level: network.signal_level,
+            quality: network.quality,
+            security: network.security,
+            security_flags: network.security_flags,
+            mode: network.mode
+          }));
+
       const successMessage = {
         message: 'Conexão com a internet ativa',
-        success: 'Há uma conexão com a internet ativa.'
+        success: 'Há uma conexão com a internet ativa.',
+        wifiList:wifiList
       };
       res.status(200).json(successMessage);
+
+        }
+      });
+
+
+
+
+
+
 
     }
   });
@@ -88,7 +137,7 @@ router.post('/disconnect', (req, res) => {
 // Rota para autenticar em uma rede Wi-Fi com base no JSON recebido
 router.post('/authenticate', (req, res) => {
   const { ssid, password } = req.body;
-  
+
 
   wifi.connect({ ssid, password }, (error) => {
     if (error) {

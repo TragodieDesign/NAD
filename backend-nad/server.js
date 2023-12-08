@@ -3,10 +3,11 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const dotenv = require('dotenv'); // para pegar o hostname
 const { exec } = require('child_process');
+const app = express();
 
 dotenv.config();
 
-const app = express();
+
 const PORT = process.env.PORT || 3003;
 
 
@@ -23,7 +24,19 @@ exec('../set_ip.sh', (error, stdout, stderr) => {
 });
 
 
-
+app.use(cors({
+ origin:true,
+  credentials:true
+}
+));
+/*
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'POST');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  next();
+});
+/*
 const ipCors = {
   origin: function (origin, callback) {
     // Lista de domínios permitidos
@@ -34,25 +47,36 @@ const ipCors = {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
+      console.log("erro do cors")
     }
   },
 };
 
 
 app.use(cors({
-  origin: ipCors,
-  credentials: true,
+  origin: '*',
+  credentials: false,
   exposedHeaders: 'Set-Cookie',
 
 }));
+
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
+*/
+
+
 
 
 app.get('/set-cookie', (req, res) => {
   // Configuração do cookie com o nome "app-auth"
   res.cookie('app-auth', 'valorDoCookie', {
     // Opções do cookie (ajuste conforme necessário)
-    sameSite: 'None',  
-    secure: true,      
+    sameSite: 'None',
+    secure: true,
   });
 
   res.send('Cookie "app-auth" definido com sucesso!');

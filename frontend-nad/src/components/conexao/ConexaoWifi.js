@@ -6,7 +6,6 @@ import WifiSignal from './Wifi-signal';
 
 const ipLocal = (process.env.REACT_APP_IP_BACK)
 
-
 const ConexaoWifi = ({ onConexaoEstabelecida }) => {
   const [wifiList, setWifiList] = useState([]);
   const [selectedNetwork, setSelectedNetwork] = useState(null);
@@ -19,7 +18,7 @@ const ConexaoWifi = ({ onConexaoEstabelecida }) => {
   useEffect(() => {
     const carregarRedesWifi = async () => {
       try {
-        const response = await axios.get(`${ipLocal}:3003/network`);
+        const response = await axios.get(`${ipLocal}/network`);
         console.log(response)
         const { wifiList } = response.data;
 
@@ -141,10 +140,7 @@ const ConexaoWifi = ({ onConexaoEstabelecida }) => {
           )}
         </div>
       )}
-      <div className='wifi-footer'>
-        <button onClick={hanldeDisconnect} className='disconnect-btn'>Desconectar</button>
-        <button onClick={handleReload} className='reload-btn'>Voltar</button>
-      </div>
+
     </div>
   );
 };

@@ -32,10 +32,10 @@ axios.interceptors.request.use(
 );
 
 */
-axios.defaults.withCredentials = true;
+
 
 const App = () => {
-  
+
 
 
 console.log(ipLocal)
@@ -76,7 +76,7 @@ console.log(ipLocal)
     // Limpar o intervalo ao desmontar o componente
    // return () => clearInterval(intervalId);
  // }, []);
-  
+
 
   const handleTelaInicial = () => {
     setMostrarTelaInicial(true);
@@ -119,7 +119,7 @@ console.log(ipLocal)
 
 
 
-  
+
 
     <TelaInicial/>
 
