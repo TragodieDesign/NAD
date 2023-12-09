@@ -9,6 +9,8 @@ dotenv.config();
 
 
 const PORT = process.env.PORT || 3003;
+const HOST = '0.0.0.0';
+const DOMAIN = 'nsd.local'
 
 
 exec('../set_ip.sh', (error, stdout, stderr) => {
@@ -108,6 +110,6 @@ app.get('/', (req, res) => {
   res.send('Servidor funcionando');
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Servidor está rodando na porta ${PORT}`);
 });

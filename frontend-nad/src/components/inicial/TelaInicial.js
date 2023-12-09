@@ -15,8 +15,19 @@ import {
   faGear
 } from '@fortawesome/free-solid-svg-icons';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
-//import { useIP } from '../IPContext';
-const ipLocal = process.env.REACT_APP_IP_BACK;
+
+const setIpLocal = window.location.hostname || 'localhost';
+const serverPort = 3003;
+
+const ipLocal = (`http://${setIpLocal}:${serverPort}`)
+
+
+console.log("Valor do IP" , ipLocal)
+
+
+
+
+console.log(`O IP do frontend é ${setIpLocal}`)
 
 
 
@@ -151,15 +162,15 @@ useEffect(() => {
           onConexaoEstabelecida();
         } else {
           // Continua verificando a cada 2 segundos se a conexão foi estabelecida
-          setTimeout(verificarConexao, 2000);
+          setTimeout(verificarConexao, 30000);
         }
       } else {
         // Resposta inesperada, continua verificando
-        setTimeout(verificarConexao, 2000);
+        setTimeout(verificarConexao, 30000);
       }
     } catch (error) {
       // Continua verificando a cada 2 segundos se a conexão foi estabelecida
-      setTimeout(verificarConexao, 2000);
+      setTimeout(verificarConexao, 30000);
     }
   };
 

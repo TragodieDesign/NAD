@@ -9,8 +9,18 @@ import VerificarConexao from './components/conexao/VerificarConexao';
 //import checkLocalhost from './components/configIP'
 //console.log(`Teste ${process.env.REACT_APP_IP_BACK}`)
 
-const ipLocal = (process.env.REACT_APP_IP_BACK)
-//console.log(`O IP do backend é ${process.env.REACT_APP_IP_BACK}`)
+const setIpLocal = window.location.hostname || 'localhost';
+const serverPort = 3003;
+
+const ipLocal = (`http://${setIpLocal}:${serverPort}`)
+
+
+console.log("Valor do IP" , ipLocal)
+
+
+
+
+console.log(`O IP do frontend é ${setIpLocal}`)
 
 
 

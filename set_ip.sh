@@ -1,10 +1,10 @@
 cd ..
 # descomente abaixo para o ip remoto ou na linha seguinte para localhost
 # Obtém o endereço IP usando o comando hostname -I
-#ip_local=$(hostname -I | awk '{print $1}')
+ip_local=$(hostname -I | awk '{print $1}')
 
 
-    ip_local="localhost"
+  #  ip_local="nsd.local"
 
 # Escreve o endereço IP no arquivo .env no diretório do backend
 echo "IP_FRONT=http://$ip_local:3000

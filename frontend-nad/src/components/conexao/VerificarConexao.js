@@ -9,14 +9,18 @@ import "./Wifi.styles.css";
 import axios from "axios";
 //import { useIP } from '../IPContext';
 
+const setIpLocal = window.location.hostname || 'localhost';
+const serverPort = 3003;
+
+const ipLocal = (`http://${setIpLocal}:${serverPort}`)
+
+
+console.log("Valor do IP" , ipLocal)
 
 
 
 
-
-
-
-const ipLocal = (process.env.REACT_APP_IP_BACK)
+console.log(`O IP do frontend é ${setIpLocal}`)
 
 const VerificarConexao = ({ onConexaoEstabelecida }) => {
 

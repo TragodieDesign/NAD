@@ -3,7 +3,19 @@ import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 
-const ipLocal = (process.env.REACT_APP_IP_BACK)
+const setIpLocal = window.location.hostname || 'localhost';
+const serverPort = 3003;
+
+const ipLocal = (`http://${setIpLocal}:${serverPort}`)
+
+
+console.log("Valor do IP" , ipLocal)
+
+
+
+
+console.log(`O IP do frontend é ${setIpLocal}`)
+
 
 
 
