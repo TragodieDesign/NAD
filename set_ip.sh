@@ -16,7 +16,7 @@ HEIGTH=\${HEIGTH}
 TARGET_USER=nsd
 HOME=/home/${TARGET_USER}
 " > backend-nad/.env
-
+chmod +x ./backend-nad/nmcli.sh
 
 # Escreve o endereço IP no arquivo .env no diretório do frontend
 echo "REACT_APP_IP_FRONT=http://$ip_local:3000

@@ -137,22 +137,22 @@ router.post('/disconnect', (req, res) => {
 router.post('/authenticate', (req, res) => {
   const { ssid, password } = req.body;
 
-  // Comando para adicionar uma nova conexão Wi-Fi usando nmcli
-  const addConnectionCommand = `nmcli dev wifi connect "${ssid}" password "${password}"`;
+  // Caminho para o script shell externo
+  const scriptPath = './nmcli.sh';
 
-  exec(addConnectionCommand, (error, stdout, stderr) => {
+  // Comando para executar o script com sudo e passar os argumentos
+  const command = `sudo ${scriptPath} "${ssid}" "${password}"`;
+
+  exec(command, (error, stdout, stderr) => {
     if (error) {
-      console.error(`Erro ao adicionar a conexão: ${error.message}`);
+      console.error(`Erro ao executar o script: ${error.message}`);
       const errorResponse = {
-        message: 'Erro ao adicionar a conexão Wi-Fi',
-        error: 'Ocorreu um erro ao tentar adicionar a conexão Wi-Fi usando nmcli.'
+        message: 'Erro ao conectar à rede Wi-Fi',
+        error: 'Ocorreu um erro ao tentar conectar-se à rede Wi-Fi usando nmcli.'
       };
       res.status(500).json(errorResponse);
       return;
     }
-    console.log(`Conexão adicionada com sucesso: ${stdout}`);
-
-    // Agora, a conexão deve ser estabelecida automaticamente
 
     const successMessage = {
       message: 'Conectado à rede Wi-Fi com sucesso',
