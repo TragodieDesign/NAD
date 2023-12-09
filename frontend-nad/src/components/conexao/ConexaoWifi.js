@@ -79,14 +79,18 @@ const ConexaoWifi = ({ onConexaoEstabelecida }) => {
     }
   };
 
+  const [exibirAguardando, setExibirAguardando] = useState(false);
+
   const handleConectar = async () => {
     try {
+      setExibirAguardando(true);
       const response = await axios.post(`${ipLocal}/network/authenticate`, {
         ssid: selectedNetwork.ssid,
         password: password,
       });
 
       if (response.status === 200) {
+        setExibirAguardando(true);
         setConectado(true);
         onConexaoEstabelecida();
         setMensagem(`Você está conectado à rede Wi-Fi: ${selectedNetwork.ssid}`);
@@ -97,10 +101,13 @@ const ConexaoWifi = ({ onConexaoEstabelecida }) => {
           setExibirResponseWifi(false);
         }, 3000);
       } else {
-        setMensagem(`Erro ao conectar à rede Wi-Fi: ${response.data.error}`);
+        setMensagem(`Erro ao conectar à rede Wi-Fi: verifique sua senha e tente novamente`);
+        setExibirAguardando(false);
+        
       }
     } catch (error) {
-      setMensagem(`Erro ao conectar à rede Wi-Fi: ${error.message}`);
+      setMensagem(`Erro ao conectar à rede Wi-Fi: verifique sua senha e tente novamente`);
+      setExibirAguardando(false);
     }
   };
 
@@ -169,11 +176,12 @@ const ConexaoWifi = ({ onConexaoEstabelecida }) => {
                 <button onClick={handleConectar} className='connect-wifi-btn'>Conectar</button>
                 {mensagem && exibirResponseWifi && <p>{mensagem}</p>}
               </div>
-                  {conectado ? null :
-      <div className="aguardando">
-        <div className='gif'><img src='./Spinner-1.1s-88px.svg'></img> </div>
-        <p>Aguardando conexão...</p>
-       </div>}
+              {conectado ? null : exibirAguardando && (
+            <div className="aguardando">
+              <div className='gif'><img src='./Spinner-1.1s-88px.svg' alt="Loading"></img> </div>
+              <p>Aguardando conexão...</p>
+            </div>
+          )}
 
             </div>
           )}

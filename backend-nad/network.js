@@ -134,27 +134,32 @@ router.post('/disconnect', (req, res) => {
 
 });
 
-// Rota para autenticar em uma rede Wi-Fi com base no JSON recebido
 router.post('/authenticate', (req, res) => {
   const { ssid, password } = req.body;
 
+  // Comando para adicionar uma nova conexão Wi-Fi usando nmcli
+  const addConnectionCommand = `nmcli dev wifi connect "${ssid}" password "${password}"`;
 
-  wifi.connect({ ssid, password }, (error) => {
+  exec(addConnectionCommand, (error, stdout, stderr) => {
     if (error) {
-      console.log(error);
+      console.error(`Erro ao adicionar a conexão: ${error.message}`);
       const errorResponse = {
-        message: 'Erro ao conectar à rede Wi-Fi',
-        error: 'Ocorreu um erro ao tentar se conectar à rede Wi-Fi.'
+        message: 'Erro ao adicionar a conexão Wi-Fi',
+        error: 'Ocorreu um erro ao tentar adicionar a conexão Wi-Fi usando nmcli.'
       };
       res.status(500).json(errorResponse);
-    } else {
-      const successMessage = {
-        message: 'Conectado à rede Wi-Fi com sucesso',
-        success: 'Conectado à rede Wi-Fi com sucesso.'
-      };
-      res.status(200).json(successMessage);
-      console.log('Conectado à rede Wi-Fi com sucesso');
+      return;
     }
+    console.log(`Conexão adicionada com sucesso: ${stdout}`);
+
+    // Agora, a conexão deve ser estabelecida automaticamente
+
+    const successMessage = {
+      message: 'Conectado à rede Wi-Fi com sucesso',
+      success: 'Conectado à rede Wi-Fi com sucesso.'
+    };
+    res.status(200).json(successMessage);
+    console.log('Conectado à rede Wi-Fi com sucesso');
   });
 });
 
