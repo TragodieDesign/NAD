@@ -134,32 +134,27 @@ router.post('/disconnect', (req, res) => {
 
 });
 
+// Rota para autenticar em uma rede Wi-Fi com base no JSON recebido
 router.post('/authenticate', (req, res) => {
   const { ssid, password } = req.body;
 
-  // Caminho para o script shell externo
-  const scriptPath = './nmcli.sh';
 
-  // Comando para executar o script com sudo e passar os argumentos
-  const command = `sudo ${scriptPath} "${ssid}" "${password}"`;
-
-  exec(command, (error, stdout, stderr) => {
+  wifi.connect({ ssid, password }, (error) => {
     if (error) {
-      console.error(`Erro ao executar o script: ${error.message}`);
+      console.log(error);
       const errorResponse = {
         message: 'Erro ao conectar à rede Wi-Fi',
-        error: 'Ocorreu um erro ao tentar conectar-se à rede Wi-Fi usando nmcli.'
+        error: 'Ocorreu um erro ao tentar se conectar à rede Wi-Fi.'
       };
       res.status(500).json(errorResponse);
-      return;
+    } else {
+      const successMessage = {
+        message: 'Conectado à rede Wi-Fi com sucesso',
+        success: 'Conectado à rede Wi-Fi com sucesso.'
+      };
+      res.status(200).json(successMessage);
+      console.log('Conectado à rede Wi-Fi com sucesso');
     }
-
-    const successMessage = {
-      message: 'Conectado à rede Wi-Fi com sucesso',
-      success: 'Conectado à rede Wi-Fi com sucesso.'
-    };
-    res.status(200).json(successMessage);
-    console.log('Conectado à rede Wi-Fi com sucesso');
   });
 });
 
